@@ -24,6 +24,7 @@ interface BackendMenu {
   _id: string;
   imageUrl: string;
   date: string;
+  note?: string;
   hotel?: {
     hotelName?: string;
     name?: string;
@@ -42,6 +43,7 @@ interface DisplayMenu {
   isOpen: boolean;
   distance: string;
   uploadedAt?: string;
+  note?: string;
 }
 
 const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
@@ -66,6 +68,7 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
               isOpen: true,
               distance: "",
               uploadedAt: m.date,
+              note: m.note || '',
             };
           });
           setMenus(mapped);

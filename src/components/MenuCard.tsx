@@ -9,9 +9,10 @@ interface MenuCardProps {
   distance?: string;
   index?: number;
   uploadedAt?: string;
+  note?: string;
 }
 
-const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploadedAt }: MenuCardProps) => {
+const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploadedAt, note }: MenuCardProps) => {
   const [liked, setLiked] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
@@ -232,6 +233,32 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
         .mc-modal-dot-closed {
           width: 8px; height: 8px; border-radius: 9999px; background: #dc2626;
         }
+
+        .mc-note {
+          font-family: 'DM Sans', sans-serif;
+          font-size: 12px;
+          font-weight: 600;
+          color: #166534;
+          background: rgba(220,252,231,0.7);
+          padding: 6px 12px;
+          border-top: 1px solid rgba(74,222,128,0.15);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .mc-modal-note {
+          font-family: 'DM Sans', sans-serif;
+          font-size: 14px;
+          font-weight: 500;
+          color: #14532d;
+          background: rgba(220,252,231,0.5);
+          border: 1px solid rgba(74,222,128,0.2);
+          border-radius: 12px;
+          padding: 10px 14px;
+          margin-top: 14px;
+          line-height: 1.5;
+        }
       `}</style>
 
       {/* ── Card ── */}
@@ -289,6 +316,12 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
             </div>
           </div>
         </div>
+
+        {note && (
+          <div className="mc-note">
+            📝 {note}
+          </div>
+        )}
       </div>
 
       {/* ── Expanded Modal ── */}
@@ -332,6 +365,12 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
                 <div className={isOpen ? "mc-modal-dot-open" : "mc-modal-dot-closed"} />
                 {isOpen ? "Open Now" : "Closed"}
               </div>
+
+              {note && (
+                <div className="mc-modal-note">
+                  📝 {note}
+                </div>
+              )}
             </div>
           </div>
         </div>
