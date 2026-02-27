@@ -8,9 +8,10 @@ interface MenuCardProps {
   isOpen: boolean;
   distance?: string;
   index?: number;
+  uploadedAt?: string;
 }
 
-const MenuCard = ({ image, messName, price, isOpen, distance, index = 0 }: MenuCardProps) => {
+const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploadedAt }: MenuCardProps) => {
   const [liked, setLiked] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
@@ -246,7 +247,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0 }: MenuC
             className="mc-img"
             loading="lazy"
           />
-          <div className="mc-price-tag">₹{price}</div>
+          {price > 0 && <div className="mc-price-tag">₹{price}</div>}
         </div>
 
         <div className="mc-footer">
@@ -300,7 +301,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0 }: MenuC
                 alt={`${messName} - Full Menu`}
                 style={{ width: "100%", height: "auto", maxHeight: "60vh", objectFit: "cover", display: "block" }}
               />
-              <div className="mc-modal-price">₹{price}</div>
+              {price > 0 && <div className="mc-modal-price">₹{price}</div>}
               <div className="mc-modal-img-fade" />
             </div>
 
@@ -308,7 +309,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0 }: MenuC
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
                 <div style={{ minWidth: 0 }}>
                   <h2 className="mc-modal-name">{messName}</h2>
-                  <p className="mc-modal-sub">{distance} away • Today's menu</p>
+                  <p className="mc-modal-sub">{distance ? `${distance} away • ` : ''}{uploadedAt ? `Uploaded ${new Date(uploadedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}` : "Today's menu"}</p>
                 </div>
                 <div className="mc-modal-actions">
                   <button className="mc-modal-fav" onClick={() => setLiked(v => !v)}>
