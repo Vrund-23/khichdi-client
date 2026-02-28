@@ -60,6 +60,7 @@ const OverlayContent = ({ onSelect }: { onSelect: (zone: string) => void }) => (
               src={zone.image}
               alt={zone.label}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+              loading="lazy"
             />
           </div>
           <div className="min-w-0">

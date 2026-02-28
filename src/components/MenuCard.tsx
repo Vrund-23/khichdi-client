@@ -333,6 +333,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
                 src={image}
                 alt={`${messName} - Full Menu`}
                 style={{ width: "100%", height: "auto", maxHeight: "60vh", objectFit: "cover", display: "block" }}
+                loading="lazy"
               />
               {price > 0 && <div className="mc-modal-price">₹{price}</div>}
               <div className="mc-modal-img-fade" />
