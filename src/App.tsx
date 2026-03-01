@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Suspense, lazy, useEffect } from "react";
 
 const Index = lazy(() => import("./pages/Index"));
+const HotelDetails = lazy(() => import("./pages/HotelDetails"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => {
           <Suspense fallback={<div className="flex h-screen w-screen items-center justify-center">Loading...</div>}>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/hotel/:id" element={<HotelDetails />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

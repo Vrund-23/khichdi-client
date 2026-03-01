@@ -2,6 +2,7 @@ import { MapPin, Heart } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { subscribeToPush, unsubscribeFromPush } from "@/lib/push";
+import { useNavigate } from "react-router-dom";
 
 interface MenuCardProps {
   image: string;
@@ -14,11 +15,13 @@ interface MenuCardProps {
   note?: string;
   hotelId?: string;
   address?: string;
+  hotelImage?: string;
+  hotelPhotos?: string[];
 }
 
-const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploadedAt, note, hotelId, address }: MenuCardProps) => {
+const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploadedAt, note, hotelId, address, hotelImage, hotelPhotos }: MenuCardProps) => {
   const [liked, setLiked] = useState(false);
-  const [expanded, setExpanded] = useState(false);
+  const navigate = useNavigate();
 
   // Rehydrate "liked" state from localStorage just to keep visual consistency
   useEffect(() => {
@@ -145,7 +148,6 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
           font-weight: 800; font-size: 1.3rem;
           color: #14532d;
           white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-          max-width: 180px;
           font-family: 'Playfair Display', serif;
           letter-spacing: -0.01em;
         }
@@ -318,7 +320,11 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
       <div
         className="mc-card"
         style={{ animationDelay: `${index * 0.08}s` }}
-        onClick={() => setExpanded(true)}
+        onClick={() => {
+          navigate(`/hotel/${hotelId || 'f1'}`, {
+            state: { image, messName, price, isOpen, distance, uploadedAt, note, hotelId, address, hotelImage, hotelPhotos }
+          });
+        }}
       >
         <div className="mc-img-wrap">
           <img
@@ -376,59 +382,6 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
           </div>
         )}
       </div>
-
-      {/* ── Expanded Modal ── */}
-      {expanded && (
-        <div className="mc-overlay" onClick={() => setExpanded(false)}>
-          <div className="mc-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="mc-modal-img-wrap">
-              <img
-                src={image}
-                alt={`${messName} - Full Menu`}
-                style={{ width: "100%", height: "auto", maxHeight: "60vh", objectFit: "cover", display: "block" }}
-                loading="lazy"
-              />
-              {price > 0 && <div className="mc-modal-price">₹{price}</div>}
-              <div className="mc-modal-img-fade" />
-            </div>
-
-            <div className="mc-modal-body">
-              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-                <div style={{ minWidth: 0 }}>
-                  <h2 className="mc-modal-name">{messName}</h2>
-                  <p className="mc-modal-sub">{distance ? `${distance} away • ` : ''}{uploadedAt ? `Uploaded ${new Date(uploadedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}` : "Today's menu"}</p>
-                </div>
-                <div className="mc-modal-actions">
-                  <button className="mc-modal-fav" onClick={(e) => { e.stopPropagation(); handleLike(e); }}>
-                    <Heart
-                      size={19}
-                      style={{
-                        fill: liked ? "#dc2626" : "none",
-                        color: liked ? "#dc2626" : "#16a34a",
-                        transition: "all 0.2s",
-                      }}
-                    />
-                  </button>
-                  <button className="mc-modal-map" onClick={handleMapClick}>
-                    <MapPin size={19} color="white" />
-                  </button>
-                </div>
-              </div>
-
-              <div className={isOpen ? "mc-modal-badge-open" : "mc-modal-badge-closed"}>
-                <div className={isOpen ? "mc-modal-dot-open" : "mc-modal-dot-closed"} />
-                {isOpen ? "Open Now" : "Closed"}
-              </div>
-
-              {note && (
-                <div className="mc-modal-note">
-                  📝 {note}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };
