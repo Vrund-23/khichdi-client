@@ -26,10 +26,14 @@ interface BackendMenu {
   date: string;
   note?: string;
   hotel?: {
+    _id?: string;
+    id?: string;
     hotelName?: string;
     name?: string;
   };
   hotelId?: {
+    _id?: string;
+    id?: string;
     hotelName?: string;
     name?: string;
   };
@@ -44,6 +48,7 @@ interface DisplayMenu {
   distance: string;
   uploadedAt?: string;
   note?: string;
+  hotelId?: string;
 }
 
 const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
@@ -52,8 +57,8 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
   const [usingBackend, setUsingBackend] = useState(false);
 
   useEffect(() => {
-    const loadMenus = async () => {
-      setLoading(true);
+    const loadMenus = async (silent = false) => {
+      if (!silent) setLoading(true);
       try {
         const backendMenus = await fetchLatestMenus();
         if (backendMenus && backendMenus.length > 0) {
@@ -69,6 +74,7 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
               distance: "",
               uploadedAt: m.date,
               note: m.note || '',
+              hotelId: hotel?._id || hotel?.id || '',
             };
           });
           setMenus(mapped);
@@ -86,6 +92,13 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
     };
 
     loadMenus();
+
+    const handleRefresh = () => {
+      loadMenus(true); // reload silently
+    };
+
+    window.addEventListener('refreshMenus', handleRefresh);
+    return () => window.removeEventListener('refreshMenus', handleRefresh);
   }, []);
 
   const filtered = menus.filter((m) =>

@@ -1,5 +1,7 @@
 import { MapPin, Heart } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
+import { subscribeToPush, unsubscribeFromPush } from "@/lib/push";
 
 interface MenuCardProps {
   image: string;
@@ -10,11 +12,49 @@ interface MenuCardProps {
   index?: number;
   uploadedAt?: string;
   note?: string;
+  hotelId?: string;
 }
 
-const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploadedAt, note }: MenuCardProps) => {
+const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploadedAt, note, hotelId }: MenuCardProps) => {
   const [liked, setLiked] = useState(false);
   const [expanded, setExpanded] = useState(false);
+
+  // Rehydrate "liked" state from localStorage just to keep visual consistency
+  useEffect(() => {
+    if (hotelId) {
+      const stored = localStorage.getItem(`liked_${hotelId}`);
+      if (stored === 'true') setLiked(true);
+    }
+  }, [hotelId]);
+
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!hotelId) {
+      toast.error("Cannot subscribe to this mess (no ID).");
+      return;
+    }
+
+    const newLikedState = !liked;
+    setLiked(newLikedState);
+    localStorage.setItem(`liked_${hotelId}`, newLikedState.toString());
+
+    if (newLikedState) {
+      const success = await subscribeToPush(hotelId);
+      if (success) {
+        toast.success(`Subscribed to ${messName} daily menu updates!`);
+      } else {
+        setLiked(false);
+        localStorage.setItem(`liked_${hotelId}`, 'false');
+        toast.error("Failed to subscribe. Please check notification permissions.");
+      }
+    } else {
+      const success = await unsubscribeFromPush(hotelId);
+      if (success) {
+        toast.info(`Unsubscribed from ${messName} updates.`);
+      }
+    }
+  };
 
   return (
     <>
@@ -285,7 +325,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
 
             <button
               className="mc-icon-btn"
-              onClick={(e) => { e.stopPropagation(); setLiked(v => !v); }}
+              onClick={handleLike}
               aria-label="Favourite"
             >
               <Heart
@@ -346,7 +386,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
                   <p className="mc-modal-sub">{distance ? `${distance} away • ` : ''}{uploadedAt ? `Uploaded ${new Date(uploadedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}` : "Today's menu"}</p>
                 </div>
                 <div className="mc-modal-actions">
-                  <button className="mc-modal-fav" onClick={() => setLiked(v => !v)}>
+                  <button className="mc-modal-fav" onClick={(e) => { e.stopPropagation(); handleLike(e); }}>
                     <Heart
                       size={19}
                       style={{
