@@ -13,9 +13,10 @@ interface MenuCardProps {
   uploadedAt?: string;
   note?: string;
   hotelId?: string;
+  address?: string;
 }
 
-const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploadedAt, note, hotelId }: MenuCardProps) => {
+const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploadedAt, note, hotelId, address }: MenuCardProps) => {
   const [liked, setLiked] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
@@ -54,6 +55,18 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
         toast.info(`Unsubscribed from ${messName} updates.`);
       }
     }
+  };
+
+  const handleMapClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    // Convert to query using address if available, fallback to basic name + valianagar
+    const locationQuery = address && address.trim() !== ''
+      ? address
+      : `${messName} Vallabh Vidyanagar`;
+
+    const query = encodeURIComponent(locationQuery);
+    window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
   };
 
   return (
@@ -341,7 +354,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
 
             <button
               className="mc-icon-btn"
-              onClick={(e) => e.stopPropagation()}
+              onClick={handleMapClick}
               aria-label="View on map"
             >
               <MapPin size={16} style={{ color: "#9ca3af", transition: "color 0.2s" }}
@@ -396,7 +409,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
                       }}
                     />
                   </button>
-                  <button className="mc-modal-map">
+                  <button className="mc-modal-map" onClick={handleMapClick}>
                     <MapPin size={19} color="white" />
                   </button>
                 </div>

@@ -30,12 +30,16 @@ interface BackendMenu {
     id?: string;
     hotelName?: string;
     name?: string;
+    address?: string;
+    price?: number;
   };
   hotelId?: {
     _id?: string;
     id?: string;
     hotelName?: string;
     name?: string;
+    address?: string;
+    price?: number;
   };
 }
 
@@ -49,6 +53,7 @@ interface DisplayMenu {
   uploadedAt?: string;
   note?: string;
   hotelId?: string;
+  address?: string;
 }
 
 const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
@@ -69,12 +74,13 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
               id: m._id,
               image: m.imageUrl,
               messName: hotelName,
-              price: 0,
+              price: hotel?.price || 0,
               isOpen: true,
               distance: "",
               uploadedAt: m.date,
               note: m.note || '',
               hotelId: hotel?._id || hotel?.id || '',
+              address: hotel?.address || '',
             };
           });
           setMenus(mapped);
