@@ -21,6 +21,8 @@ interface MenuCardProps {
 
 const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploadedAt, note, hotelId, address, hotelImage, hotelPhotos }: MenuCardProps) => {
   const [liked, setLiked] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showFullScreen, setShowFullScreen] = useState(false);
   const navigate = useNavigate();
 
   // Rehydrate "liked" state from localStorage just to keep visual consistency
@@ -109,6 +111,9 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
           box-shadow: 0 4px 24px rgba(22,163,74,0.09), 0 1px 4px rgba(0,0,0,0.05);
           cursor: pointer;
           opacity: 0;
+          display: flex;
+          flex-direction: column;
+          height: 100%;
           animation: mc-fadeUp 0.65s cubic-bezier(0.16,1,0.3,1) forwards;
           transition: transform 0.32s cubic-bezier(0.16,1,0.3,1),
                       box-shadow 0.32s cubic-bezier(0.16,1,0.3,1),
@@ -120,9 +125,9 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
           border-color: rgba(74,222,128,0.45);
         }
 
-        .mc-img-wrap { position: relative; overflow: hidden; }
+        .mc-img-wrap { position: relative; overflow: hidden; flex-shrink: 0; }
         .mc-img {
-          width: 100%; height: auto; display: block; object-fit: cover;
+          width: 100%; height: 240px; display: block; object-fit: cover;
           transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
         }
         .mc-card:hover .mc-img { transform: scale(1.06); }
@@ -142,6 +147,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
           padding: 12px 15px;
           display: flex; align-items: center; justify-content: space-between;
           background: linear-gradient(to bottom, rgba(240,253,244,0.5), #fff);
+          flex-grow: 1;
         }
 
         .mc-mess-name {
@@ -201,8 +207,8 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
         .mc-overlay {
           position: fixed; inset: 0; z-index: 50;
           display: flex; align-items: center; justify-content: center;
-          background: rgba(0,0,0,0.42);
-          backdrop-filter: blur(12px);
+          background: rgba(0,0,0,0.6);
+          backdrop-filter: blur(8px);
           padding: 16px;
           animation: mc-fadeIn 0.22s ease both;
         }
@@ -210,13 +216,32 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
           font-family: 'DM Sans', sans-serif;
           background: rgba(255,255,255,0.97);
           border-radius: 28px;
-          max-width: 480px; width: 100%;
+          max-width: 520px; width: 100%;
+          max-height: 95vh;
+          display: flex;
+          flex-direction: column;
           overflow: hidden;
           border: 1.5px solid rgba(74,222,128,0.28);
           box-shadow: 0 24px 80px rgba(22,163,74,0.17), 0 8px 24px rgba(0,0,0,0.1);
           animation: mc-scaleIn 0.32s cubic-bezier(0.16,1,0.3,1) both;
         }
-        .mc-modal-img-wrap { position: relative; }
+        .mc-modal-scroll {
+          overflow-y: auto;
+          flex-grow: 1;
+        }
+        .mc-modal-img-wrap { 
+          position: relative; 
+          background: #f1f5f9; 
+          flex-shrink: 0;
+        }
+        .mc-modal-img {
+          width: 100%;
+          height: auto;
+          max-height: 55vh;
+          object-fit: contain;
+          display: block;
+          cursor: zoom-in;
+        }
         .mc-modal-price {
           position: absolute; top: 16px; right: 16px;
           background: linear-gradient(135deg, #16a34a, #4ade80);
@@ -320,11 +345,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
       <div
         className="mc-card"
         style={{ animationDelay: `${index * 0.08}s` }}
-        onClick={() => {
-          navigate(`/hotel/${hotelId || 'f1'}`, {
-            state: { image, messName, price, isOpen, distance, uploadedAt, note, hotelId, address, hotelImage, hotelPhotos }
-          });
-        }}
+        onClick={() => setShowModal(true)}
       >
         <div className="mc-img-wrap">
           <img
@@ -377,11 +398,93 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
         </div>
 
         {note && (
-          <div className="mc-note">
+          <div className="mc-note mt-auto">
             📝 {note}
           </div>
         )}
       </div>
+
+      {/* ── Modal ── */}
+      {showModal && (
+        <div className="mc-overlay" onClick={() => setShowModal(false)}>
+          <div className="mc-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="mc-modal-scroll">
+              <div className="mc-modal-img-wrap">
+                <img src={image} alt={messName} className="mc-modal-img" onClick={(e) => { e.stopPropagation(); setShowFullScreen(true); }} />
+                <div className="mc-modal-price">₹{price}</div>
+                <div className="mc-modal-img-fade"></div>
+              </div>
+              <div className="mc-modal-body">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h2 className="mc-modal-name">{messName}</h2>
+                    {distance && <p className="mc-modal-sub">{distance} away</p>}
+                    <div className={isOpen ? "mc-modal-badge-open" : "mc-modal-badge-closed"}>
+                      <div className={isOpen ? "mc-modal-dot-open" : "mc-modal-dot-closed"} />
+                      {isOpen ? "Currently Open" : "Currently Closed"}
+                    </div>
+                  </div>
+                  <div className="mc-modal-actions">
+                    <button className="mc-modal-fav" onClick={handleLike}>
+                      <Heart
+                        size={20}
+                        className={liked ? "mc-heart-pop" : ""}
+                        style={{
+                          fill: liked ? "#dc2626" : "none",
+                          color: liked ? "#dc2626" : "#22c55e",
+                        }}
+                      />
+                    </button>
+                    <button className="mc-modal-map" onClick={handleMapClick}>
+                      <MapPin size={20} color="#fff" />
+                    </button>
+                  </div>
+                </div>
+
+                {note && <div className="mc-modal-note">📝 {note}</div>}
+
+                <button
+                  className="w-full mt-6 py-3 px-4 rounded-xl flex items-center justify-center gap-2 font-bold text-white text-lg transition-transform hover:scale-[1.02] active:scale-[0.98]"
+                  style={{ background: "#16a34a", boxShadow: "0 4px 14px rgba(22,163,74,0.3)" }}
+                  onClick={() => {
+                    setShowModal(false);
+                    navigate(`/hotel/${hotelId || 'f1'}`, {
+                      state: { image, messName, price, isOpen, distance, uploadedAt, note, hotelId, address, hotelImage, hotelPhotos }
+                    });
+                  }}
+                >
+                  View More Details
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Full Screen Image Viewer ── */}
+      {showFullScreen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 cursor-zoom-out"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowFullScreen(false);
+          }}
+          style={{ animation: 'mc-fadeIn 0.22s ease both' }}
+        >
+          <img
+            src={image}
+            alt={messName}
+            className="w-full h-full object-contain max-w-7xl mx-auto"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowFullScreen(false);
+            }}
+          />
+          <div className="absolute top-6 right-6 text-white font-bold opacity-70 text-sm bg-black/50 px-3 py-1 rounded-full pointer-events-none">
+            Tap anywhere to close
+          </div>
+        </div>
+      )}
     </>
   );
 };

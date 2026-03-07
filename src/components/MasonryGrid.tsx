@@ -164,11 +164,11 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
         </div>
       )}
 
-      {/* Staggered masonry: 1 col mobile, 2 col sm, 3 col lg */}
+      {/* Symmetrical Grid: 1 col mobile, 2 col sm, 3 col lg */}
       {!loading && (
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 md:gap-5 space-y-4 md:space-y-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((item, i) => (
-            <div key={item.id} className="break-inside-avoid">
+            <div key={item.id}>
               <MenuCard {...item} index={i} />
             </div>
           ))}

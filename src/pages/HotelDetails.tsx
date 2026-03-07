@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, MapPin, Heart } from "lucide-react";
+import { ArrowLeft, MapPin, Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import { subscribeToPush, unsubscribeFromPush } from "@/lib/push";
 import { toast } from "sonner";
 
@@ -12,6 +12,11 @@ const HotelDetails = () => {
     // Try to use state passed from router, or empty defaults if accessed directly
     const state = location.state || {};
     const [liked, setLiked] = useState(false);
+
+    // Unify all photos (recent + history)
+    const allPhotos = [state.image, ...(state.hotelPhotos || [])].filter(Boolean).slice(0, 6);
+    const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+    const [showFullScreen, setShowFullScreen] = useState(false);
 
     useEffect(() => {
         if (id) {
@@ -138,26 +143,65 @@ const HotelDetails = () => {
                     </div>
                 </div>
 
-                {/* Menu Section */}
+                {/* Menu / Gallery Section */}
                 <h3 className="text-2xl font-black font-serif text-green-900 mb-6 flex items-center gap-3">
-                    🍽️ Today's Menu
+                    🍽️ {currentPhotoIndex === 0 ? "Today's Menu" : "Past Menu"}
                     {state.uploadedAt && <span className="text-sm font-normal text-gray-500 font-sans mt-1 bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">{new Date(state.uploadedAt).toLocaleDateString()}</span>}
                 </h3>
 
-                <div className="bg-white p-4 sm:p-6 rounded-[32px] shadow-xl shadow-green-900/5 border border-green-50">
-                    <div className="relative rounded-2xl overflow-hidden aspect-[3/4] sm:aspect-auto sm:max-h-[600px] w-full bg-gray-50 flex items-center justify-center">
-                        {state.image ? (
-                            <img
-                                src={state.image}
-                                alt={`${state.messName} menu`}
-                                className="w-full h-full object-contain"
-                            />
+                <div className="bg-white p-4 sm:p-6 rounded-[32px] shadow-xl shadow-green-900/5 border border-green-50 mb-8">
+                    {/* Main Image View */}
+                    <div className="relative rounded-[24px] overflow-hidden w-full bg-gray-900/5 flex items-center justify-center h-[55vh] sm:h-[70vh] shadow-inner">
+                        {allPhotos.length > 0 ? (
+                            <>
+                                <img
+                                    src={allPhotos[currentPhotoIndex]}
+                                    alt={`${state.messName} menu`}
+                                    className="w-full h-full object-contain drop-shadow-sm cursor-zoom-in"
+                                    onClick={(e) => { e.stopPropagation(); setShowFullScreen(true); }}
+                                    style={{ animation: 'mc-fadeIn 0.3s ease-in-out' }}
+                                />
+
+                                {/* Navigation Arrows */}
+                                {allPhotos.length > 1 && (
+                                    <>
+                                        <button
+                                            onClick={() => setCurrentPhotoIndex((prev) => (prev - 1 + allPhotos.length) % allPhotos.length)}
+                                            className="absolute left-4 w-10 h-10 sm:w-12 sm:h-12 bg-white/80 hover:bg-white backdrop-blur shadow-lg text-green-900 rounded-full flex items-center justify-center transition-transform hover:scale-110 active:scale-95 z-10"
+                                        >
+                                            <ChevronLeft size={24} />
+                                        </button>
+                                        <button
+                                            onClick={() => setCurrentPhotoIndex((prev) => (prev + 1) % allPhotos.length)}
+                                            className="absolute right-4 w-10 h-10 sm:w-12 sm:h-12 bg-white/80 hover:bg-white backdrop-blur shadow-lg text-green-900 rounded-full flex items-center justify-center transition-transform hover:scale-110 active:scale-95 z-10"
+                                        >
+                                            <ChevronRight size={24} />
+                                        </button>
+                                    </>
+                                )}
+                            </>
                         ) : (
                             <p className="text-gray-400 font-medium">No menu image available.</p>
                         )}
                     </div>
 
-                    {state.note && (
+                    {/* Thumbnail Strip */}
+                    {allPhotos.length > 1 && (
+                        <div className="mt-6 flex overflow-x-auto gap-3 pb-2 scroll-smooth" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                            <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+                            {allPhotos.map((photo, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => setCurrentPhotoIndex(idx)}
+                                    className={`relative shrink-0 rounded-2xl overflow-hidden h-20 w-20 sm:h-24 sm:w-24 transition-all duration-300 ${currentPhotoIndex === idx ? 'border-4 border-green-500 shadow-md scale-105' : 'border border-gray-200 opacity-60 hover:opacity-100'}`}
+                                >
+                                    <img src={photo} alt={`Thumbnail ${idx}`} className="w-full h-full object-cover" />
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
+                    {state.note && currentPhotoIndex === 0 && (
                         <div className="mt-6 bg-yellow-50 text-yellow-800 p-5 rounded-2xl border border-yellow-200 shadow-sm flex items-start gap-4">
                             <span className="text-2xl">📝</span>
                             <div>
@@ -168,28 +212,60 @@ const HotelDetails = () => {
                     )}
                 </div>
 
-                {state.hotelPhotos && state.hotelPhotos.length > 0 && (
-                    <div className="mt-8 w-full bg-white rounded-[32px] p-6 sm:p-8 shadow-xl shadow-green-900/5 border border-green-50 overflow-hidden">
-                        <h3 className="text-2xl font-black font-serif text-green-900 mb-6 flex items-center gap-3">
-                            🖼️ Hotel Gallery
-                        </h3>
-                        <div className="flex overflow-x-auto gap-4 pb-2 snap-x snap-mandatory" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                            <style>{`div::-webkit-scrollbar { display: none; }`}</style>
-                            {state.hotelPhotos.map((photo: string, idx: number) => (
-                                <img
-                                    key={idx}
-                                    src={photo}
-                                    alt={`${state.messName} photo ${idx + 1}`}
-                                    className="w-72 h-48 md:w-80 md:h-56 object-cover rounded-2xl shadow-sm shrink-0 snap-center border border-green-100/50"
-                                    onClick={() => window.open(photo, '_blank')}
-                                    style={{ cursor: 'pointer' }}
-                                />
-                            ))}
-                        </div>
+                {/* Static Hotel Ambiance Section */}
+                <div className="mt-4 w-full bg-white rounded-[32px] p-6 sm:p-8 shadow-xl shadow-green-900/5 border border-green-50 overflow-hidden">
+                    <h3 className="text-2xl font-black font-serif text-green-900 mb-6 flex items-center gap-3">
+                        🖼️ Hotel Ambiance
+                        <span className="text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full uppercase tracking-wider ml-1">Photos</span>
+                    </h3>
+                    <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                        <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+                        {[
+                            'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800&auto=format&fit=crop',
+                            'https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=800&auto=format&fit=crop',
+                            'https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=800&auto=format&fit=crop',
+                            'https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=800&auto=format&fit=crop'
+                        ].map((photo, idx) => (
+                            <img
+                                key={idx}
+                                src={photo}
+                                alt={`${state.messName} ambiance ${idx + 1}`}
+                                className="w-64 h-44 sm:w-80 sm:h-56 object-cover rounded-2xl shadow-sm shrink-0 snap-center border border-green-100"
+                                onClick={() => window.open(photo, '_blank')}
+                                style={{ cursor: 'pointer', transition: 'transform 0.3s ease' }}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.03)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                            />
+                        ))}
                     </div>
-                )}
+                </div>
 
             </div>
+
+            {/* ── Full Screen Image Viewer ── */}
+            {showFullScreen && (
+                <div
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 cursor-zoom-out"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setShowFullScreen(false);
+                    }}
+                    style={{ animation: 'mc-fadeIn 0.22s ease both' }}
+                >
+                    <img
+                        src={allPhotos[currentPhotoIndex]}
+                        alt={state.messName}
+                        className="w-full h-full object-contain max-w-7xl mx-auto"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setShowFullScreen(false);
+                        }}
+                    />
+                    <div className="absolute top-6 right-6 text-white font-bold opacity-70 text-sm bg-black/50 px-3 py-1 rounded-full pointer-events-none">
+                        Tap anywhere to close
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
