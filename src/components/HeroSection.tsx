@@ -306,7 +306,7 @@ const HeroSection = ({ onSearch }) => {
       `}</style>
 
       <section
-        className="grain-overlay relative min-h-[92vh] flex flex-col items-center justify-center overflow-hidden px-4"
+        className="grain-overlay relative min-h-[75vh] lg:min-h-[92vh] flex flex-col items-center justify-center overflow-hidden px-4 pb-8 sm:pb-0"
         style={{
           background: "radial-gradient(ellipse 80% 60% at 50% 10%, #ffffff 0%, #f0fdf4 35%, #dcfce7 60%, #bbf7d022 80%, #f0fdf4 100%)",
           fontFamily: "'DM Sans', sans-serif",
@@ -322,43 +322,11 @@ const HeroSection = ({ onSearch }) => {
         {/* Main content */}
         <div className="relative z-10 flex flex-col items-center text-center max-w-4xl w-full">
 
-          {/* Top Date Badge */}
-          <div
-            className="badge-animated mb-6 flex flex-col items-center justify-center px-8 py-3 rounded-3xl"
-            style={{
-              background: "linear-gradient(135deg, rgba(220,252,231,0.9), rgba(240,253,244,0.95))",
-              border: "1.5px solid rgba(74,222,128,0.4)",
-              backdropFilter: "blur(12px)",
-              boxShadow: "0 8px 32px rgba(22,163,74,0.15), inset 0 2px 0 rgba(255,255,255,0.6)",
-              transformOrigin: "center"
-            }}
-          >
-            <span style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "14px",
-              fontWeight: 800,
-              color: "#16a34a",
-              textTransform: "uppercase",
-              letterSpacing: "0.15em",
-              marginBottom: "-2px"
-            }}>
-              {new Date().toLocaleDateString('en-US', { weekday: 'long' })}
-            </span>
-            <span style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: "clamp(32px, 6vw, 42px)",
-              fontWeight: 900,
-              color: "#14532d",
-              lineHeight: 1.1,
-              letterSpacing: "-0.02em"
-            }}>
-              {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
-            </span>
-          </div>
+
 
           {/* ── LOGO: K + hichdi each letter its own color ── */}
           <div
-            className="hero-logo mb-2 flex items-end justify-center"
+            className="hero-logo mt-20 sm:mt-24 mb-2 flex items-end justify-center"
             style={{ position: "relative", lineHeight: 1, gap: "0.01em" }}
           >
             {LETTERS.map((l, i) => {
@@ -448,7 +416,7 @@ const HeroSection = ({ onSearch }) => {
           </div>
 
           {/* Badges */}
-          <div className="badge-row mt-8 flex flex-wrap gap-3 justify-center">
+          <div className="badge-row mt-6 sm:mt-8 flex flex-wrap gap-3 justify-center mb-6 sm:mb-10">
             {[
               { icon: "🕐", label: "Updated daily" },
               { icon: "📍", label: "Vidyanagar" },
@@ -458,6 +426,40 @@ const HeroSection = ({ onSearch }) => {
                 <span>{b.icon}</span> {b.label}
               </span>
             ))}
+          </div>
+
+          {/* Date Badge Below Search */}
+          <div
+            className="badge-animated mb-2 flex flex-col items-center justify-center px-8 py-3 rounded-3xl"
+            style={{
+              background: "linear-gradient(135deg, rgba(220,252,231,0.9), rgba(240,253,244,0.95))",
+              border: "1.5px solid rgba(74,222,128,0.4)",
+              backdropFilter: "blur(12px)",
+              boxShadow: "0 8px 32px rgba(22,163,74,0.15), inset 0 2px 0 rgba(255,255,255,0.6)",
+              transformOrigin: "center"
+            }}
+          >
+            <span style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "14px",
+              fontWeight: 800,
+              color: "#16a34a",
+              textTransform: "uppercase",
+              letterSpacing: "0.15em",
+              marginBottom: "-2px"
+            }}>
+              {new Date().toLocaleDateString('en-US', { weekday: 'long' })}
+            </span>
+            <span style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: "clamp(32px, 6vw, 42px)",
+              fontWeight: 900,
+              color: "#14532d",
+              lineHeight: 1.1,
+              letterSpacing: "-0.02em"
+            }}>
+              {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
+            </span>
           </div>
         </div>
 

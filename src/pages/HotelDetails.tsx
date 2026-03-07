@@ -13,10 +13,12 @@ const HotelDetails = () => {
     const state = location.state || {};
     const [liked, setLiked] = useState(false);
 
-    // Unify all photos (recent + history)
-    const allPhotos = [state.image, ...(state.hotelPhotos || [])].filter(Boolean).slice(0, 6);
+    // Menu photo
+    const allPhotos = [state.image].filter(Boolean);
+    const ambiancePhotos = state.hotelPhotos || [];
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
     const [showFullScreen, setShowFullScreen] = useState(false);
+    const [fullScreenImage, setFullScreenImage] = useState<string | null>(null);
 
     useEffect(() => {
         if (id) {
@@ -145,7 +147,7 @@ const HotelDetails = () => {
 
                 {/* Menu / Gallery Section */}
                 <h3 className="text-2xl font-black font-serif text-green-900 mb-6 flex items-center gap-3">
-                    🍽️ {currentPhotoIndex === 0 ? "Today's Menu" : "Past Menu"}
+                    🍽️ Today's Menu
                     {state.uploadedAt && <span className="text-sm font-normal text-gray-500 font-sans mt-1 bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">{new Date(state.uploadedAt).toLocaleDateString()}</span>}
                 </h3>
 
@@ -158,7 +160,7 @@ const HotelDetails = () => {
                                     src={allPhotos[currentPhotoIndex]}
                                     alt={`${state.messName} menu`}
                                     className="w-full h-full object-contain drop-shadow-sm cursor-zoom-in"
-                                    onClick={(e) => { e.stopPropagation(); setShowFullScreen(true); }}
+                                    onClick={(e) => { e.stopPropagation(); setFullScreenImage(allPhotos[currentPhotoIndex]); setShowFullScreen(true); }}
                                     style={{ animation: 'mc-fadeIn 0.3s ease-in-out' }}
                                 />
 
@@ -213,52 +215,51 @@ const HotelDetails = () => {
                 </div>
 
                 {/* Static Hotel Ambiance Section */}
-                <div className="mt-4 w-full bg-white rounded-[32px] p-6 sm:p-8 shadow-xl shadow-green-900/5 border border-green-50 overflow-hidden">
-                    <h3 className="text-2xl font-black font-serif text-green-900 mb-6 flex items-center gap-3">
-                        🖼️ Hotel Ambiance
-                        <span className="text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full uppercase tracking-wider ml-1">Photos</span>
-                    </h3>
-                    <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                        <style>{`div::-webkit-scrollbar { display: none; }`}</style>
-                        {[
-                            'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800&auto=format&fit=crop',
-                            'https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=800&auto=format&fit=crop',
-                            'https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=800&auto=format&fit=crop',
-                            'https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=800&auto=format&fit=crop'
-                        ].map((photo, idx) => (
-                            <img
-                                key={idx}
-                                src={photo}
-                                alt={`${state.messName} ambiance ${idx + 1}`}
-                                className="w-64 h-44 sm:w-80 sm:h-56 object-cover rounded-2xl shadow-sm shrink-0 snap-center border border-green-100"
-                                onClick={() => window.open(photo, '_blank')}
-                                style={{ cursor: 'pointer', transition: 'transform 0.3s ease' }}
-                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.03)'}
-                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                            />
-                        ))}
+                {ambiancePhotos.length > 0 && (
+                    <div className="mt-4 w-full bg-white rounded-[32px] p-6 sm:p-8 shadow-xl shadow-green-900/5 border border-green-50 overflow-hidden">
+                        <h3 className="text-2xl font-black font-serif text-green-900 mb-6 flex items-center gap-3">
+                            🖼️ Hotel Ambiance
+                            <span className="text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full uppercase tracking-wider ml-1">Photos</span>
+                        </h3>
+                        <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                            <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+                            {ambiancePhotos.map((photo, idx) => (
+                                <img
+                                    key={idx}
+                                    src={photo}
+                                    alt={`${state.messName} ambiance ${idx + 1}`}
+                                    className="w-64 h-44 sm:w-80 sm:h-56 object-cover rounded-2xl shadow-sm shrink-0 snap-center border border-green-100"
+                                    onClick={(e) => { e.stopPropagation(); setFullScreenImage(photo); setShowFullScreen(true); }}
+                                    style={{ cursor: 'pointer', transition: 'transform 0.3s ease' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.03)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                />
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
 
             </div>
 
             {/* ── Full Screen Image Viewer ── */}
-            {showFullScreen && (
+            {showFullScreen && fullScreenImage && (
                 <div
                     className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 cursor-zoom-out"
                     onClick={(e) => {
                         e.stopPropagation();
                         setShowFullScreen(false);
+                        setFullScreenImage(null);
                     }}
                     style={{ animation: 'mc-fadeIn 0.22s ease both' }}
                 >
                     <img
-                        src={allPhotos[currentPhotoIndex]}
+                        src={fullScreenImage}
                         alt={state.messName}
                         className="w-full h-full object-contain max-w-7xl mx-auto"
                         onClick={(e) => {
                             e.stopPropagation();
                             setShowFullScreen(false);
+                            setFullScreenImage(null);
                         }}
                     />
                     <div className="absolute top-6 right-6 text-white font-bold opacity-70 text-sm bg-black/50 px-3 py-1 rounded-full pointer-events-none">
