@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, MapPin, Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import { subscribeToPush, unsubscribeFromPush } from "@/lib/push";
 import { toast } from "sonner";
+import Footer from "@/components/Footer";
 
 const HotelDetails = () => {
     const { id } = useParams();
@@ -240,6 +241,8 @@ const HotelDetails = () => {
                 )}
 
             </div>
+
+            <Footer />
 
             {/* ── Full Screen Image Viewer ── */}
             {showFullScreen && fullScreenImage && (
