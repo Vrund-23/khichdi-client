@@ -44,6 +44,8 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
     const newLikedState = !liked;
     setLiked(newLikedState);
     localStorage.setItem(`liked_${hotelId}`, newLikedState.toString());
+    // Notify MasonryGrid to re-sort (localStorage events don't fire in the same tab)
+    window.dispatchEvent(new Event('likeChanged'));
 
     if (newLikedState) {
       const success = await subscribeToPush(hotelId);
