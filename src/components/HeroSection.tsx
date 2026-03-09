@@ -1,21 +1,23 @@
 import { Search } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
+import React from 'react';
 
-const FloatingSpice = ({ emoji, style }) => (
+const FloatingSpice = ({ emoji, style, duration, delay, isVisible }: { emoji: string; style: React.CSSProperties; duration: number; delay: number; isVisible: boolean }) => (
   <span
     className="absolute select-none pointer-events-none"
     style={{
       fontSize: "clamp(1.2rem, 2.5vw, 2rem)",
       ...style,
-      animation: `floatSpice ${3 + Math.random() * 4}s ease-in-out infinite`,
-      animationDelay: `${Math.random() * 3}s`,
+      animation: `floatSpice ${duration}s ease-in-out infinite`,
+      animationDelay: `${delay}s`,
+      animationPlayState: isVisible ? "running" : "paused",
     }}
   >
     {emoji}
   </span>
 );
 
-const ChefCharacter = () => (
+const ChefCharacter = ({ isVisible }: { isVisible: boolean }) => (
   <svg
     viewBox="0 0 180 260"
     fill="none"
@@ -27,6 +29,7 @@ const ChefCharacter = () => (
       width: "clamp(100px, 14vw, 180px)",
       zIndex: 4,
       animation: "chefBob 3.2s ease-in-out infinite",
+      animationPlayState: isVisible ? "running" : "paused",
       filter: "drop-shadow(0 12px 32px rgba(22,163,74,0.3))",
     }}
   >
@@ -187,125 +190,48 @@ const LETTERS = [
   { char: "i", color: "#0369a1", glow: "rgba(3,105,161,0.5)", delay: "0.48s" },
 ];
 
-const HeroSection = ({ onSearch }) => {
+const HeroSection = ({ onSearch }: { onSearch?: (q: string) => void }) => {
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [isVisible, setIsVisible] = useState(true);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
 
-  const spices = [
-    { emoji: "🌶️", style: { top: "8%", left: "5%", opacity: 0.65 } },
-    { emoji: "🧅", style: { top: "14%", right: "7%", opacity: 0.55 } },
-    { emoji: "🫚", style: { bottom: "22%", left: "3%", opacity: 0.5 } },
-    { emoji: "🌿", style: { top: "42%", right: "4%", opacity: 0.6 } },
-    { emoji: "🫘", style: { bottom: "28%", right: "9%", opacity: 0.5 } },
-    { emoji: "✨", style: { top: "22%", left: "11%", opacity: 0.75 } },
-    { emoji: "🍋", style: { bottom: "16%", left: "14%", opacity: 0.55 } },
-    { emoji: "🧄", style: { top: "62%", right: "6%", opacity: 0.45 } },
-  ];
+    if (!sectionRef.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsVisible(entry.isIntersecting);
+    });
+    observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const spices = useMemo(() => {
+    const rawSpices = [
+      { emoji: "🌶️", style: { top: "8%", left: "5%", opacity: 0.65 } },
+      { emoji: "🧅", style: { top: "14%", right: "7%", opacity: 0.55 } },
+      { emoji: "🫚", style: { bottom: "22%", left: "3%", opacity: 0.5 } },
+      { emoji: "🌿", style: { top: "42%", right: "4%", opacity: 0.6 } },
+      { emoji: "🫘", style: { bottom: "28%", right: "9%", opacity: 0.5 } },
+      { emoji: "✨", style: { top: "22%", left: "11%", opacity: 0.75 } },
+      { emoji: "🍋", style: { bottom: "16%", left: "14%", opacity: 0.55 } },
+      { emoji: "🧄", style: { top: "62%", right: "6%", opacity: 0.45 } },
+    ];
+    return rawSpices.map(s => ({
+      ...s,
+      duration: 3 + Math.random() * 4,
+      delay: Math.random() * 3
+    }));
+  }, []);
 
   return (
     <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;600;700&display=swap');
-
-        @keyframes floatSpice {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          33%       { transform: translateY(-16px) rotate(7deg); }
-          66%       { transform: translateY(-7px) rotate(-5deg); }
-        }
-        @keyframes heroFadeUp {
-          from { opacity: 0; transform: translateY(36px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes logoReveal {
-          from { opacity: 0; transform: translateY(-18px) scale(0.9); }
-          to   { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes taglineSlide {
-          from { opacity: 0; transform: translateX(-28px); }
-          to   { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes searchPop {
-          from { opacity: 0; transform: scale(0.95) translateY(18px); }
-          to   { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        @keyframes pulseRing {
-          0%   { box-shadow: 0 0 0 0    rgba(74,160,74,0.45); }
-          70%  { box-shadow: 0 0 0 14px rgba(74,160,74,0); }
-          100% { box-shadow: 0 0 0 0    rgba(74,160,74,0); }
-        }
-        @keyframes badgeBounce {
-          0%, 100% { transform: scale(1); }
-          50%       { transform: scale(1.06); }
-        }
-        @keyframes grainMove {
-          0%   { transform: translate(0,0); }
-          20%  { transform: translate(-2%,-3%); }
-          40%  { transform: translate(3%,2%); }
-          60%  { transform: translate(-1%,4%); }
-          80%  { transform: translate(2%,-2%); }
-          100% { transform: translate(0,0); }
-        }
-        @keyframes chefBob {
-          0%, 100% { transform: translateY(0px) rotate(-1deg); }
-          50%       { transform: translateY(-10px) rotate(1deg); }
-        }
-        @keyframes chefReveal {
-          from { opacity: 0; transform: translateX(-40px) translateY(20px); }
-          to   { opacity: 1; transform: translateX(0) translateY(0); }
-        }
-        @keyframes steamPuff {
-          0%   { opacity: 0.7; transform: translateY(0) scaleX(1); }
-          50%  { opacity: 0.4; transform: translateY(-8px) scaleX(1.3); }
-          100% { opacity: 0;   transform: translateY(-16px) scaleX(0.8); }
-        }
-        @keyframes letterWave {
-          0%, 100% { transform: translateY(0px); }
-          50%       { transform: translateY(-10px); }
-        }
-        @keyframes letterEntrance {
-          from { opacity: 0; transform: translateY(40px) scale(0.8); }
-          to   { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .grain-overlay::before {
-          content: '';
-          position: absolute; inset: 0;
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
-          pointer-events: none; z-index: 1; opacity: 0.35;
-          animation: grainMove 8s steps(10) infinite;
-        }
-
-        .hero-logo      { animation: logoReveal 0.9s cubic-bezier(0.16,1,0.3,1) both; }
-        .hero-tagline   { font-family: 'DM Sans', sans-serif; animation: taglineSlide 0.8s cubic-bezier(0.16,1,0.3,1) 0.6s both; }
-        .hero-sub       { font-family: 'DM Sans', sans-serif; animation: heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.8s both; }
-        .search-wrap    { animation: heroFadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 1s both; }
-        .badge-row      { animation: heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 1.2s both; }
-        .chef-wrap      { animation: chefReveal 1s cubic-bezier(0.16,1,0.3,1) 0.3s both; }
-        .badge-animated { animation: badgeBounce 2.5s ease-in-out infinite; }
-        .search-btn-pulse { animation: pulseRing 2s infinite; }
-
-        .letter-span {
-          font-family: 'Playfair Display', serif;
-          font-weight: 900;
-          line-height: 1;
-          display: inline-block;
-          animation: letterEntrance 0.7s cubic-bezier(0.16,1,0.3,1) both,
-                     letterWave 2.8s ease-in-out infinite;
-          cursor: default;
-          transition: transform 0.2s;
-        }
-        .letter-span:hover {
-          transform: translateY(-8px) scale(1.12) !important;
-        }
-
-        .search-input-custom { font-family: 'DM Sans', sans-serif; font-weight: 500; }
-      `}</style>
 
       <section
+        ref={sectionRef}
         className="grain-overlay relative min-h-[75vh] lg:min-h-[92vh] flex flex-col items-center justify-center overflow-hidden px-4 pb-8 sm:pb-0"
         style={{
           background: "radial-gradient(ellipse 80% 60% at 50% 10%, #ffffff 0%, #f0fdf4 35%, #dcfce7 60%, #bbf7d022 80%, #f0fdf4 100%)",
@@ -317,7 +243,7 @@ const HeroSection = ({ onSearch }) => {
         <div style={{ position: "absolute", bottom: "0", right: "-10%", width: "45vw", height: "45vw", borderRadius: "40% 60% 45% 55%", background: "radial-gradient(circle, rgba(134,239,172,0.25) 0%, transparent 70%)", filter: "blur(50px)", zIndex: 0 }} />
 
         {/* Floating spices */}
-        {mounted && spices.map((s, i) => <FloatingSpice key={i} emoji={s.emoji} style={s.style} />)}
+        {mounted && spices.map((s, i) => <FloatingSpice key={i} emoji={s.emoji} style={s.style} duration={s.duration} delay={s.delay} isVisible={isVisible} />)}
 
         {/* Main content */}
         <div className="relative z-10 flex flex-col items-center text-center max-w-4xl w-full">
@@ -339,7 +265,7 @@ const HeroSection = ({ onSearch }) => {
                   {/* Chef only behind K */}
                   {isK && (
                     <div className="chef-wrap" style={{ position: "absolute", bottom: 0, left: 0, zIndex: 2, pointerEvents: "none" }}>
-                      <ChefCharacter />
+                      <ChefCharacter isVisible={isVisible} />
                     </div>
                   )}
 

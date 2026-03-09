@@ -33,7 +33,10 @@ export async function subscribeToPush(hotelId: string) {
         }
 
         // Register service worker if not already registered
-        const registration = await navigator.serviceWorker.register('/sw.js');
+        let registration = await navigator.serviceWorker.getRegistration();
+        if (!registration) {
+            registration = await navigator.serviceWorker.register('/sw.js');
+        }
         await navigator.serviceWorker.ready;
 
         // Fetch VAPID public key from backend
@@ -99,9 +102,21 @@ export async function unsubscribeFromPush(hotelId: string) {
                     endpoint: subscription.endpoint
                 })
             });
-            // We do NOT unsubscribe from pushManager.unsubscribe() completely 
-            // since the user might be subscribed to other hotels. 
-            // We just remove the hotel reference from the backend.
+            // Check if user is subscribed to any other hotels
+            let isSubscribedToOthers = false;
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('liked_') && key !== `liked_${hotelId}`) {
+                    if (localStorage.getItem(key) === 'true') {
+                        isSubscribedToOthers = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!isSubscribedToOthers) {
+                await subscription.unsubscribe();
+            }
             return true;
         }
         return false;
