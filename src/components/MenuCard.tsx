@@ -130,7 +130,8 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
               alt={`${messName} - Today's Menu`}
               className="mc-img"
               loading={index < 4 ? "eager" : "lazy"}
-              fetchPriority={index < 4 ? "high" : "auto"}
+              // @ts-ignore
+              fetchpriority={index < 4 ? "high" : "auto"}
               onError={(e) => { e.currentTarget.src = '/khichdi-fallback.svg'; }}
             />
             {price > 0 && <div className="mc-price-tag">₹{price}</div>}

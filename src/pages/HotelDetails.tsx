@@ -302,7 +302,8 @@ const HotelDetails = () => {
                                     alt={`${hotelData.messName} menu`}
                                     className="w-full h-full object-contain drop-shadow-sm cursor-zoom-in"
                                     loading="eager"
-                                    fetchPriority="high"
+                                    // @ts-ignore
+                                    fetchpriority="high"
                                     onError={(e) => { e.currentTarget.src = '/khichdi-fallback.svg'; }}
                                     onClick={(e) => { e.stopPropagation(); setFullScreenImage(activeMenu.imageUrl); setShowFullScreen(true); }}
                                     style={{ animation: 'mc-fadeIn 0.3s ease-in-out' }}
