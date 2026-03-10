@@ -5,6 +5,7 @@ import { subscribeToPush, unsubscribeFromPush } from "@/lib/push";
 import { toast } from "sonner";
 import Footer from "@/components/Footer";
 import API_BASE_URL from "@/lib/api";
+import { optimizeImage } from "@/lib/utils";
 
 interface MenuData {
     imageUrl: string;
@@ -297,7 +298,7 @@ const HotelDetails = () => {
                         {combinedMenus.length > 0 && activeMenu ? (
                             <>
                                 <img
-                                    src={activeMenu.imageUrl}
+                                    src={optimizeImage(activeMenu.imageUrl, 1200)}
                                     alt={`${hotelData.messName} menu`}
                                     className="w-full h-full object-contain drop-shadow-sm cursor-zoom-in"
                                     loading="eager"
@@ -339,7 +340,7 @@ const HotelDetails = () => {
                                     onClick={() => setCurrentPhotoIndex(idx)}
                                     className={`relative shrink-0 rounded-2xl overflow-hidden h-20 w-20 sm:h-24 sm:w-24 transition-all duration-300 ${currentPhotoIndex === idx ? 'border-4 border-green-500 shadow-md scale-105' : 'border border-gray-200 opacity-60 hover:opacity-100'}`}
                                 >
-                                    <img src={menu.imageUrl} alt={`Thumbnail ${idx}`} loading="lazy" className="w-full h-full object-cover" />
+                                    <img src={optimizeImage(menu.imageUrl, 200)} alt={`Thumbnail ${idx}`} loading="lazy" className="w-full h-full object-cover" />
                                 </button>
                             ))}
                         </div>
@@ -367,7 +368,7 @@ const HotelDetails = () => {
                             {ambiancePhotos.map((photo, idx) => (
                                 <img
                                     key={idx}
-                                    src={photo}
+                                    src={optimizeImage(photo, 600)}
                                     alt={`${hotelData.messName} ambiance ${idx + 1}`}
                                     className="w-64 h-44 sm:w-80 sm:h-56 object-cover rounded-2xl shadow-sm shrink-0 snap-center border border-green-100"
                                     loading="lazy"
@@ -400,7 +401,7 @@ const HotelDetails = () => {
                     style={{ animation: 'mc-fadeIn 0.22s ease both' }}
                 >
                     <img
-                        src={fullScreenImage}
+                        src={optimizeImage(fullScreenImage, 1800)}
                         alt={hotelData.messName}
                         className="w-full h-full object-contain max-w-7xl mx-auto"
                         onError={(e) => { e.currentTarget.src = '/khichdi-fallback.svg'; }}

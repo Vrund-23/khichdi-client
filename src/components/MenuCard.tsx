@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { subscribeToPush, unsubscribeFromPush } from "@/lib/push";
 import { useNavigate } from "react-router-dom";
+import { optimizeImage } from "@/lib/utils";
 
 interface MenuCardProps {
   image: string;
@@ -125,7 +126,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
         >
           <div className="mc-img-wrap">
             <img
-              src={image}
+              src={optimizeImage(image, 500)}
               alt={`${messName} - Today's Menu`}
               className="mc-img"
               loading={index < 4 ? "eager" : "lazy"}
@@ -219,7 +220,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
             <div className="mc-modal-scroll">
               <div className="mc-modal-img-wrap">
                 {menuPostedToday || image ? (
-                  <img src={image} alt={messName} className="mc-modal-img" onError={(e) => { e.currentTarget.src = '/khichdi-fallback.svg'; }} onClick={(e) => { e.stopPropagation(); setShowFullScreen(true); }} />
+                  <img src={optimizeImage(image, 1000)} alt={messName} className="mc-modal-img" onError={(e) => { e.currentTarget.src = '/khichdi-fallback.svg'; }} onClick={(e) => { e.stopPropagation(); setShowFullScreen(true); }} />
                 ) : (
                   <div style={{ height: "250px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#f3f4f6", cursor: "default" }}>
                     <div style={{ fontSize: "3rem", opacity: 0.4 }}>📋</div>
@@ -285,7 +286,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
           style={{ animation: 'mc-fadeIn 0.22s ease both' }}
         >
           <img
-            src={image}
+            src={optimizeImage(image, 1600)}
             alt={messName}
             className="w-full h-full object-contain max-w-7xl mx-auto"
             onError={(e) => { e.currentTarget.src = '/khichdi-fallback.svg'; }}
