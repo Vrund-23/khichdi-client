@@ -20,9 +20,10 @@ interface MenuCardProps {
   hotelImage?: string;
   hotelPhotos?: string[];
   menuPostedToday?: boolean;
+  hotelType?: string;
 }
 
-const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploadedAt, note, hotelId, address, latitude, longitude, hotelImage, hotelPhotos, menuPostedToday = true }: MenuCardProps) => {
+const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploadedAt, note, hotelId, address, latitude, longitude, hotelImage, hotelPhotos, menuPostedToday = true, hotelType = "dynamic" }: MenuCardProps) => {
   const [liked, setLiked] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showFullScreen, setShowFullScreen] = useState(false);
@@ -181,7 +182,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
           style={{ animationDelay: `${index * 0.08}s` }}
           onClick={() => {
             navigate(`/hotel/${hotelId || 'f1'}`, {
-              state: { image, messName, price, isOpen, distance, uploadedAt, note, hotelId, address, latitude, longitude, hotelImage, hotelPhotos }
+              state: { image, messName, price, isOpen, distance, uploadedAt, note, hotelId, address, latitude, longitude, hotelImage, hotelPhotos, hotelType }
             });
           }}
         >
@@ -259,7 +260,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
                   onClick={() => {
                     setShowModal(false);
                     navigate(`/hotel/${hotelId || 'f1'}`, {
-                      state: { image, messName, price, isOpen, distance, uploadedAt, note, hotelId, address, latitude, longitude, hotelImage, hotelPhotos }
+                      state: { image, messName, price, isOpen, distance, uploadedAt, note, hotelId, address, latitude, longitude, hotelImage, hotelPhotos, hotelType }
                     });
                   }}
                 >

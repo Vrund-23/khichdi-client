@@ -31,6 +31,7 @@ interface BackendHotel {
   price?: number;
   imageUrl?: string;
   photos?: string[];
+  hotelType?: string;
   todayMenu: {
     _id: string;
     imageUrl: string;
@@ -55,6 +56,7 @@ interface DisplayMenu {
   hotelImage?: string;
   hotelPhotos?: string[];
   menuPostedToday: boolean; // false → show "not uploaded yet" placeholder
+  hotelType?: string;
 }
 
 
@@ -64,6 +66,7 @@ const isFavourite = (hotelId?: string) =>
   hotelId ? localStorage.getItem(`liked_${hotelId}`) === 'true' : false;
 
 const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
+  const [selectedType, setSelectedType] = useState<"dynamic" | "fixed">("dynamic");
   // Bump this counter whenever a like changes so the sort re-runs
   const [likeVersion, setLikeVersion] = useState(0);
 
@@ -72,23 +75,28 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
     if (hotels && hotels.length > 0) {
       return (hotels as BackendHotel[]).map((h) => {
         const hotelName = h.hotelName || h.name || "Unknown Mess";
+        const hType = h.hotelType || "dynamic";
+        const isFixed = hType === "fixed";
         const hasMenu = h.todayMenu !== null && h.todayMenu !== undefined;
+        // For fixed menu, the hotel image itself acts as the fixed menu and is always "posted"
+        const isMenuAvailable = isFixed || hasMenu;
         return {
           id: h._id,
-          image: hasMenu ? h.todayMenu!.imageUrl : "",
+          image: hasMenu ? h.todayMenu!.imageUrl : (isFixed ? (h.imageUrl || "") : ""),
           messName: hotelName,
           price: h.price || 0,
           isOpen: true,
           distance: "",
-          uploadedAt: hasMenu ? h.todayMenu!.date : undefined,
-          note: hasMenu ? (h.todayMenu!.note || "") : "",
+          uploadedAt: hasMenu && !isFixed ? h.todayMenu!.date : undefined,
+          note: hasMenu && !isFixed ? (h.todayMenu!.note || "") : "",
           hotelId: h._id,
           address: h.address || "",
           latitude: h.latitude,
           longitude: h.longitude,
           hotelImage: h.imageUrl || "",
           hotelPhotos: h.photos || [],
-          menuPostedToday: hasMenu,
+          menuPostedToday: isMenuAvailable,
+          hotelType: hType,
         };
       });
     } else if (hotels !== null) {
@@ -135,7 +143,8 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
 
   const { filtered, sorted } = useMemo(() => {
     const f: DisplayMenu[] = (menus as DisplayMenu[]).filter((m) =>
-      m.messName.toLowerCase().includes(searchQuery.toLowerCase())
+      m.messName.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      (m.hotelType || "dynamic") === selectedType
     );
 
     const s = [...f].sort((a, b) => {
@@ -160,7 +169,7 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
     });
 
     return { filtered: f, sorted: s };
-  }, [menus, searchQuery, likeVersion]);
+  }, [menus, searchQuery, selectedType, likeVersion]);
 
   // Count how many have today's menu uploaded (for the header counter)
   const uploadedCount = filtered.filter((m) => m.menuPostedToday).length;
@@ -194,10 +203,27 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
       style={{ background: "linear-gradient(to bottom, #f0fdf4, #fafaf8)" }}
     >
       {/* Section header */}
-      <div className="flex items-center justify-between mb-5">
-        <h2 className="text-xl font-bold" style={{ color: "#166534" }}>
-          🍽️ Today's Menus
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-5 gap-4">
+        <h2 className="text-xl font-bold flex items-center gap-4" style={{ color: "#166534" }}>
+          <span>🍽️ {selectedType === "fixed" ? "Fixed Menus" : "Today's Menus"}</span>
+          <select
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value as "dynamic" | "fixed")}
+            className="text-sm border border-green-200 bg-white text-green-800 rounded-md px-2 py-1 outline-none cursor-pointer hidden md:block"
+          >
+            <option value="dynamic">Daily Changing Menus</option>
+            <option value="fixed">Fixed Menus</option>
+          </select>
         </h2>
+        {/* Mobile Dropdown */}
+        <select
+          value={selectedType}
+          onChange={(e) => setSelectedType(e.target.value as "dynamic" | "fixed")}
+          className="text-sm border border-green-200 bg-white text-green-800 rounded-md px-3 py-2 outline-none cursor-pointer md:hidden w-full"
+        >
+          <option value="dynamic">Daily Changing Menus</option>
+          <option value="fixed">Fixed Menus</option>
+        </select>
         <div className="flex items-center gap-2">
           {usingBackend && (
             <span

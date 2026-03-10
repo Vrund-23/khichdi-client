@@ -24,6 +24,7 @@ interface HotelData {
     note?: string;
     hotelPhotos: string[];
     hotelImage: string;
+    hotelType?: string;
 }
 
 const HotelDetails = () => {
@@ -109,7 +110,7 @@ const HotelDetails = () => {
                     const res = await fetch(`${API_BASE_URL}/admin/hotels`);
                     const data = await res.json();
                     if (data.success) {
-                        const hotel = data.hotels.find((h: { _id: string; hotelName?: string; name?: string; price?: number; address?: string; latitude?: number; longitude?: number; todayMenu?: { imageUrl: string; date: string; note?: string; }; photos?: string[]; imageUrl?: string; }) => h._id === id);
+                        const hotel = data.hotels.find((h: { _id: string; hotelType?: string; hotelName?: string; name?: string; price?: number; address?: string; latitude?: number; longitude?: number; todayMenu?: { imageUrl: string; date: string; note?: string; }; photos?: string[]; imageUrl?: string; }) => h._id === id);
                         if (hotel) {
                             setHotelData({
                                 messName: hotel.hotelName || hotel.name || "Unknown Mess",
@@ -118,11 +119,12 @@ const HotelDetails = () => {
                                 address: hotel.address || "",
                                 latitude: hotel.latitude,
                                 longitude: hotel.longitude,
-                                image: hotel.todayMenu?.imageUrl || "",
+                                image: hotel.todayMenu?.imageUrl || (hotel.hotelType === 'fixed' ? (hotel.imageUrl || "") : ""),
                                 uploadedAt: hotel.todayMenu?.date || undefined,
                                 note: hotel.todayMenu?.note || "",
                                 hotelPhotos: hotel.photos || [],
-                                hotelImage: hotel.imageUrl || ""
+                                hotelImage: hotel.imageUrl || "",
+                                hotelType: hotel.hotelType || "dynamic"
                             });
                         }
                     }
@@ -285,8 +287,8 @@ const HotelDetails = () => {
 
                 {/* Menu / Gallery Section */}
                 <h3 className="text-2xl font-black font-serif text-green-900 mb-6 flex items-center gap-3">
-                    {hotelData.image && currentPhotoIndex === 0 ? "🍽️ Today's Menu" : "🍽️ Past Menu"}
-                    {activeMenu?.date && <span className="text-sm font-normal text-gray-500 font-sans mt-1 bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">{new Date(activeMenu.date).toLocaleDateString()}</span>}
+                    {hotelData.hotelType === 'fixed' ? "🍽️ Menu" : (hotelData.image && currentPhotoIndex === 0 ? "🍽️ Today's Menu" : "🍽️ Past Menu")}
+                    {activeMenu?.date && hotelData.hotelType !== 'fixed' && <span className="text-sm font-normal text-gray-500 font-sans mt-1 bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">{new Date(activeMenu.date).toLocaleDateString()}</span>}
                 </h3>
 
                 <div className="bg-white p-4 sm:p-6 rounded-[32px] shadow-xl shadow-green-900/5 border border-green-50 mb-8">
