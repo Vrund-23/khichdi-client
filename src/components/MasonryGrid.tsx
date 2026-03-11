@@ -200,49 +200,52 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
 
   return (
     <div
-      className="w-full max-w-6xl mx-auto px-4 py-6 pb-28 md:pb-8"
+      className="w-full max-w-6xl mx-auto px-4 py-6 pb-8"
       style={{ background: "linear-gradient(to bottom, #f0fdf4, #fafaf8)" }}
     >
       {/* Section header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-5 gap-4">
-        <h2 className="text-xl font-bold flex items-center gap-4" style={{ color: "#166534" }}>
-          <span>🍽️ {selectedType === "fixed" ? "Fixed Menus" : "Today's Menus"}</span>
-          <select
-            value={selectedType}
-            onChange={(e) => setSelectedType(e.target.value as "dynamic" | "fixed")}
-            className="text-sm border border-green-200 bg-white text-green-800 rounded-md px-2 py-1 outline-none cursor-pointer hidden md:block"
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-5 border-b border-green-50 pb-5">
+        <div className="flex flex-col gap-2">
+          <h2 className="text-2xl sm:text-3xl font-black font-serif text-green-900 flex items-center gap-3">
+            {selectedType === "fixed" ? "📋 Fixed Menus" : "🍽️ Today's Menus"}
+            
+            {usingBackend && (
+              <span className="text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-green-100 text-green-700 uppercase tracking-widest border border-green-200 self-center ml-1">
+                Live
+              </span>
+            )}
+          </h2>
+          <p className="text-sm font-medium text-green-700/70 flex items-center gap-2 pl-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+            Showing {filtered.length} places
+            {usingBackend && filtered.length > 0 && uploadedCount < filtered.length && (
+              <> • <span className="text-green-600 font-bold">{uploadedCount} menus posted today</span></>
+            )}
+          </p>
+        </div>
+
+        {/* Horizontal Menu Switcher (replaces old dropdown) */}
+        <div className="w-full md:w-auto bg-green-50/50 backdrop-blur shadow-sm p-1.5 rounded-[20px] border border-green-100 flex items-center gap-1 font-sans">
+          <button
+            onClick={() => setSelectedType("dynamic")}
+            className={`flex-1 md:flex-none px-4 sm:px-6 py-2.5 sm:py-3 text-[13px] sm:text-sm font-black rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap ${
+              selectedType === "dynamic"
+                ? "bg-gradient-to-b from-white to-green-50/50 text-green-800 shadow-sm border border-green-200/60 scale-[1.02] transform"
+                : "text-green-700/70 hover:bg-green-100/50 hover:text-green-800 active:scale-95"
+            }`}
           >
-            <option value="dynamic">Daily Changing Menus</option>
-            <option value="fixed">Fixed Menus</option>
-          </select>
-        </h2>
-        {/* Mobile Dropdown */}
-        <select
-          value={selectedType}
-          onChange={(e) => setSelectedType(e.target.value as "dynamic" | "fixed")}
-          className="text-sm border border-green-200 bg-white text-green-800 rounded-md px-3 py-2 outline-none cursor-pointer md:hidden w-full"
-        >
-          <option value="dynamic">Daily Changing Menus</option>
-          <option value="fixed">Fixed Menus</option>
-        </select>
-        <div className="flex items-center gap-2">
-          {usingBackend && (
-            <span
-              className="text-xs font-semibold px-3 py-1 rounded-full"
-              style={{ background: "rgba(34,197,94,0.1)", color: "#22c55e" }}
-            >
-              🟢 Live
-            </span>
-          )}
-          <span
-            className="text-xs font-semibold px-3 py-1 rounded-full"
-            style={{ background: "rgba(22,163,74,0.1)", color: "#16a34a" }}
+            Daily Changing
+          </button>
+          <button
+            onClick={() => setSelectedType("fixed")}
+            className={`flex-1 md:flex-none px-4 sm:px-6 py-2.5 sm:py-3 text-[13px] sm:text-sm font-black rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap ${
+              selectedType === "fixed"
+                ? "bg-gradient-to-b from-white to-green-50/50 text-green-800 shadow-sm border border-green-200/60 scale-[1.02] transform"
+                : "text-green-700/70 hover:bg-green-100/50 hover:text-green-800 active:scale-95"
+            }`}
           >
-            {filtered.length} places
-            {usingBackend && filtered.length > 0 && uploadedCount < filtered.length
-              ? ` • ${uploadedCount} menu${uploadedCount !== 1 ? "s" : ""} posted`
-              : ""}
-          </span>
+            Fixed Menus
+          </button>
         </div>
       </div>
 

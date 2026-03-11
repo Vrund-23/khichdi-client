@@ -311,7 +311,7 @@ const HeroSection = ({ onSearch }: { onSearch?: (q: string) => void }) => {
             className="hero-sub mb-10"
             style={{ fontSize: "clamp(0.95rem, 2.2vw, 1.15rem)", color: "#78716c", fontWeight: 400, maxWidth: "480px", lineHeight: 1.65 }}
           >
-            Find the freshest mess food in Vidyanagar — thali, dal, roti &amp; more, updated every day. 🏠
+            ક્યાં જમવું છે એનું Confusion? 🤔<br />'ખિચડી' પાસે છે Solution! ✨
           </p>
 
           {/* Search bar */}

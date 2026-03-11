@@ -225,7 +225,7 @@ const HotelDetails = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#f0fdf4] font-sans relative pb-24">
+        <div className="min-h-screen bg-[#f0fdf4] font-sans relative pb-8">
             {/* Header bar */}
             <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-green-100 px-4 py-4 flex items-center justify-between">
                 <button
@@ -307,7 +307,7 @@ const HotelDetails = () => {
                                     loading="eager"
                                     // @ts-ignore
                                     fetchpriority="high"
-                                    onError={(e) => { e.currentTarget.src = '/khichdi-fallback.svg'; }}
+                                    onError={(e) => { e.currentTarget.src = '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'; }}
                                     onClick={(e) => { e.stopPropagation(); setFullScreenImage(activeMenu.imageUrl); setShowFullScreen(true); }}
                                     style={{ animation: 'mc-fadeIn 0.3s ease-in-out' }}
                                 />
@@ -376,7 +376,7 @@ const HotelDetails = () => {
                                     alt={`${hotelData.messName} ambiance ${idx + 1}`}
                                     className="w-64 h-44 sm:w-80 sm:h-56 object-cover rounded-2xl shadow-sm shrink-0 snap-center border border-green-100"
                                     loading="lazy"
-                                    onError={(e) => { e.currentTarget.src = '/khichdi-fallback.svg'; }}
+                                    onError={(e) => { e.currentTarget.src = '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'; }}
                                     onClick={(e) => { e.stopPropagation(); setFullScreenImage(photo); setShowFullScreen(true); }}
                                     style={{ cursor: 'pointer', transition: 'transform 0.3s ease' }}
                                     onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.03)'}
@@ -408,7 +408,7 @@ const HotelDetails = () => {
                         src={optimizeImage(fullScreenImage, 1800)}
                         alt={hotelData.messName}
                         className="w-full h-full object-contain max-w-7xl mx-auto"
-                        onError={(e) => { e.currentTarget.src = '/khichdi-fallback.svg'; }}
+                        onError={(e) => { e.currentTarget.src = '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'; }}
                         onClick={(e) => {
                             e.stopPropagation();
                             setShowFullScreen(false);

@@ -132,7 +132,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
               loading={index < 4 ? "eager" : "lazy"}
               // @ts-ignore
               fetchpriority={index < 4 ? "high" : "auto"}
-              onError={(e) => { e.currentTarget.src = '/khichdi-fallback.svg'; }}
+              onError={(e) => { e.currentTarget.src = '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'; }}
             />
             {price > 0 && <div className="mc-price-tag">₹{price}</div>}
           </div>
@@ -221,7 +221,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
             <div className="mc-modal-scroll">
               <div className="mc-modal-img-wrap">
                 {menuPostedToday || image ? (
-                  <img src={optimizeImage(image, 1000)} alt={messName} className="mc-modal-img" onError={(e) => { e.currentTarget.src = '/khichdi-fallback.svg'; }} onClick={(e) => { e.stopPropagation(); setShowFullScreen(true); }} />
+                  <img src={optimizeImage(image, 1000)} alt={messName} className="mc-modal-img" onError={(e) => { e.currentTarget.src = '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'; }} onClick={(e) => { e.stopPropagation(); setShowFullScreen(true); }} />
                 ) : (
                   <div style={{ height: "250px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#f3f4f6", cursor: "default" }}>
                     <div style={{ fontSize: "3rem", opacity: 0.4 }}>📋</div>
@@ -290,7 +290,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
             src={optimizeImage(image, 1600)}
             alt={messName}
             className="w-full h-full object-contain max-w-7xl mx-auto"
-            onError={(e) => { e.currentTarget.src = '/khichdi-fallback.svg'; }}
+            onError={(e) => { e.currentTarget.src = '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'; }}
             onClick={(e) => {
               e.stopPropagation();
               setShowFullScreen(false);
