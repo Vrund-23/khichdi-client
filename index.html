@@ -5,9 +5,19 @@
   <meta charset="UTF-8" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Preload fonts to avoid render blocking -->
+  <link rel="preload"
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;600;700&display=swap"
+    as="style" />
+  <!-- Load fonts asynchronously -->
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;600;700&display=swap"
-    rel="stylesheet">
+    rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet" />
+  </noscript>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Khichdi — Daily Mess Menus Near You</title>
   <meta name="description" content="Find daily mess menu photos near your hostel instantly. No login required." />
@@ -15,9 +25,21 @@
   <meta property="og:title" content="Khichdi — Daily Mess Menus" />
   <meta property="og:description" content="Find daily mess menu photos near your hostel instantly." />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.khichdi.co.in/" />
+  <meta property="og:image" content="https://www.khichdi.co.in/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#16a34a" />
   <link rel="apple-touch-icon" href="/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png" />
+  <!-- Google tag (gtag.js) for GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5GQ2E82HB9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    // NOTE: Replace 'G-XXXXXXXXXX' with your actual Measurement ID
+    gtag('config', 'G-5GQ2E82HB9');
+  </script>
 </head>
 
 <body>

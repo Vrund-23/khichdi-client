@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, MapPin, Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import { subscribeToPush, unsubscribeFromPush } from "@/lib/push";
 import { toast } from "sonner";
+import { Helmet } from "react-helmet-async";
 import Footer from "@/components/Footer";
 import API_BASE_URL from "@/lib/api";
 import { optimizeImage } from "@/lib/utils";
@@ -226,6 +227,52 @@ const HotelDetails = () => {
 
     return (
         <div className="min-h-screen bg-[#f0fdf4] font-sans relative pb-8">
+            <Helmet>
+                <title>{hotelData.messName ? `${hotelData.messName} - Menu & Details | Khichdi` : 'Hotel Details | Khichdi'}</title>
+                <meta name="description" content={`Check out the latest menu and details for ${hotelData?.messName || 'this mess'} in Vallabh Vidyanagar. Subscribe for daily menu updates. Starts at ₹${hotelData?.price || 0}.`} />
+                <meta name="keywords" content={`${hotelData?.messName || 'hotel'}, vidyanagar food, tiffin service, hostel menu, daily menu`} />
+
+                {/* Open Graph / Facebook */}
+                <meta property="og:type" content="restaurant.restaurant" />
+                <meta property="og:url" content={`https://www.khichdi.co.in/hotel/${id || ''}`} />
+                <meta property="og:title" content={hotelData.messName ? `${hotelData.messName} - Menu & Details | Khichdi` : 'Hotel Details | Khichdi'} />
+                <meta property="og:description" content={`Check out the latest menu and details for ${hotelData?.messName || 'this mess'} in Vallabh Vidyanagar. Starts at ₹${hotelData?.price || 0}.`} />
+                <meta property="og:image" content={hotelData.image || "https://www.khichdi.co.in/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png"} />
+                <meta property="og:site_name" content="Khichdi" />
+
+                {/* Twitter */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:url" content={`https://www.khichdi.co.in/hotel/${id || ''}`} />
+                <meta name="twitter:title" content={hotelData.messName ? `${hotelData.messName} - Menu & Details | Khichdi` : 'Hotel Details | Khichdi'} />
+                <meta name="twitter:description" content={`Check out the latest menu and details for ${hotelData?.messName || 'this mess'} in Vallabh Vidyanagar. Starts at ₹${hotelData?.price || 0}.`} />
+                <meta name="twitter:image" content={hotelData.image || "https://www.khichdi.co.in/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png"} />
+
+                {/* JSON-LD Structured Data */}
+                <script type="application/ld+json">
+                    {`
+                    {
+                        "@context": "https://schema.org",
+                        "@type": "Restaurant",
+                        "name": "${hotelData.messName || 'Restaurant'}",
+                        "image": "${hotelData.image || 'https://www.khichdi.co.in/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'}",
+                        "address": {
+                            "@type": "PostalAddress",
+                            "streetAddress": "${hotelData.address || 'Vallabh Vidyanagar'}",
+                            "addressLocality": "Anand",
+                            "addressRegion": "GJ",
+                            "addressCountry": "IN"
+                        }${hotelData.latitude && hotelData.longitude ? `,
+                        "geo": {
+                            "@type": "GeoCoordinates",
+                            "latitude": ${hotelData.latitude},
+                            "longitude": ${hotelData.longitude}
+                        }` : ''},
+                        "url": "https://www.khichdi.co.in/hotel/${id || ''}",
+                        "priceRange": "₹${hotelData.price || 0}"
+                    }
+                    `}
+                </script>
+            </Helmet>
             {/* Header bar */}
             <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-green-100 px-4 py-4 flex items-center justify-between">
                 <button

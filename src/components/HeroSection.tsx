@@ -251,7 +251,7 @@ const HeroSection = ({ onSearch }: { onSearch?: (q: string) => void }) => {
 
 
           {/* ── LOGO: K + hichdi each letter its own color ── */}
-          <div
+          <h1
             className="hero-logo mt-20 sm:mt-24 mb-2 flex items-end justify-center"
             style={{ position: "relative", lineHeight: 1, gap: "0.01em" }}
           >
@@ -290,7 +290,7 @@ const HeroSection = ({ onSearch }: { onSearch?: (q: string) => void }) => {
                 </div>
               );
             })}
-          </div>
+          </h1>
 
           {/* Divider */}
           <div style={{ width: "160px", height: "3px", background: "linear-gradient(90deg, #dc2626, #ea580c, #ca8a04, #16a34a, #7c3aed, #0369a1)", borderRadius: "99px", margin: "14px auto 22px" }} />
