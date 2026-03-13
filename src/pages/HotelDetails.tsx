@@ -352,6 +352,7 @@ const HotelDetails = () => {
                                     alt={`${hotelData.messName} menu`}
                                     className="w-full h-full object-contain drop-shadow-sm cursor-zoom-in"
                                     loading="eager"
+                                    decoding="async"
                                     // @ts-ignore
                                     fetchpriority="high"
                                     onError={(e) => { e.currentTarget.src = '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'; }}

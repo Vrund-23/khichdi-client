@@ -126,12 +126,13 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
         >
           <div className="mc-img-wrap">
             <img
-              src={optimizeImage(image, 500)}
+              src={optimizeImage(image, 450)}
               alt={`${messName} - Today's Menu`}
               className="mc-img"
-              loading={index < 4 ? "eager" : "lazy"}
+              loading={index < 6 ? "eager" : "lazy"}
+              decoding="async"
               // @ts-ignore
-              fetchpriority={index < 4 ? "high" : "auto"}
+              fetchpriority={index < 6 ? "high" : "auto"}
               onError={(e) => { e.currentTarget.src = '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'; }}
             />
             {price > 0 && <div className="mc-price-tag">₹{price}</div>}
