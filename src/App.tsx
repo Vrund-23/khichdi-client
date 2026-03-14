@@ -4,9 +4,32 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Suspense, lazy, useEffect } from "react";
 
-const Index = lazy(() => import("./pages/Index"));
-const HotelDetails = lazy(() => import("./pages/HotelDetails"));
-const NotFound = lazy(() => import("./pages/NotFound"));
+// Wrapper to handle dynamic import failures during deployments
+const lazyWithRetry = (componentImport: () => Promise<any>) =>
+  lazy(async () => {
+    const pageHasAlreadyBeenForceRefreshed = JSON.parse(
+      window.sessionStorage.getItem('page-has-been-force-refreshed') || 'false'
+    );
+
+    try {
+      const component = await componentImport();
+      window.sessionStorage.setItem('page-has-been-force-refreshed', 'false');
+      return component;
+    } catch (error: any) {
+      // If the chunk failed to load, it might be due to a new deployment removing old files.
+      if (!pageHasAlreadyBeenForceRefreshed && error?.message?.includes('Failed to fetch dynamically imported module')) {
+        window.sessionStorage.setItem('page-has-been-force-refreshed', 'true');
+        window.location.reload();
+        // Return an empty promise to prevent React from throwing while the page reloads
+        return new Promise<{ default: React.ComponentType<any> }>(() => {});
+      }
+      throw error;
+    }
+  });
+
+const Index = lazyWithRetry(() => import("./pages/Index"));
+const HotelDetails = lazyWithRetry(() => import("./pages/HotelDetails"));
+const NotFound = lazyWithRetry(() => import("./pages/NotFound"));
 
 const App = () => {
   useEffect(() => {
