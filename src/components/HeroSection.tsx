@@ -238,6 +238,19 @@ const HeroSection = ({ onSearch }: { onSearch?: (q: string) => void }) => {
           fontFamily: "'DM Sans', sans-serif",
         }}
       >
+        {/* Contact Us Button */}
+        <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50">
+            <button
+              onClick={() => {
+                document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="px-4 py-2 sm:px-6 sm:py-2.5 bg-white/80 backdrop-blur-md shadow-md text-green-800 font-bold rounded-full border border-green-100 hover:bg-green-50 hover:scale-105 transition-all text-sm"
+              style={{ fontFamily: "'DM Sans', sans-serif" }}
+            >
+              Contact Us
+            </button>
+        </div>
+
         {/* Blob backgrounds */}
         <div style={{ position: "absolute", top: "-10%", left: "-15%", width: "55vw", height: "55vw", borderRadius: "60% 40% 55% 45%", background: "radial-gradient(circle, rgba(74,200,74,0.18) 0%, transparent 70%)", filter: "blur(40px)", zIndex: 0 }} />
         <div style={{ position: "absolute", bottom: "0", right: "-10%", width: "45vw", height: "45vw", borderRadius: "40% 60% 45% 55%", background: "radial-gradient(circle, rgba(134,239,172,0.25) 0%, transparent 70%)", filter: "blur(50px)", zIndex: 0 }} />

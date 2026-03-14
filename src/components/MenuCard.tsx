@@ -1,4 +1,4 @@
-import { MapPin, Heart } from "lucide-react";
+import { MapPin, Heart, ArrowLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { subscribeToPush, unsubscribeFromPush } from "@/lib/push";
@@ -220,7 +220,13 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
         <div className="mc-overlay" onClick={() => setShowModal(false)} role="dialog" aria-label="Menu Details">
           <div className="mc-modal" onClick={(e) => e.stopPropagation()}>
             <div className="mc-modal-scroll">
-              <div className="mc-modal-img-wrap">
+              <div className="mc-modal-img-wrap" style={{ position: 'relative' }}>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setShowModal(false); }}
+                  className="absolute top-4 left-4 w-10 h-10 bg-white/80 hover:bg-white backdrop-blur shadow-lg text-green-900 rounded-full flex items-center justify-center transition-transform active:scale-95 z-10"
+                >
+                  <ArrowLeft size={20} />
+                </button>
                 {menuPostedToday || image ? (
                   <img src={optimizeImage(image, 1000)} alt={messName} className="mc-modal-img" onError={(e) => { e.currentTarget.src = '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'; }} onClick={(e) => { e.stopPropagation(); setShowFullScreen(true); }} />
                 ) : (

@@ -86,7 +86,7 @@ const HotelDetails = () => {
     useEffect(() => {
         // Scroll to top when page first loads
         window.scrollTo(0, 0);
-        
+
         if (id) {
             const stored = localStorage.getItem(`liked_${id}`);
             if (stored === 'true') setLiked(true);

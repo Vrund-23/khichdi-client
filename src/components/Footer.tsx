@@ -2,7 +2,7 @@ const Footer = () => {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="w-full py-10 mt-6 flex flex-col items-center justify-center text-center gap-3 px-4 bg-gradient-to-b from-transparent to-green-50/50 border-t border-green-100/50 pb-10">
+        <footer id="footer" className="w-full py-10 mt-6 flex flex-col items-center justify-center text-center gap-3 px-4 bg-gradient-to-b from-transparent to-green-50/50 border-t border-green-100/50 pb-10">
             <div className="flex flex-col items-center gap-1 mb-2">
                 <p className="text-sm font-medium text-gray-500 font-serif">
                     © {currentYear} Khichdi | Made for Vidyanagar
