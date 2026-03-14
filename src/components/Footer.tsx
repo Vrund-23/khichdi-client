@@ -35,7 +35,7 @@ const Footer = () => {
                         તમારા menu અને Location અમારી વેબસાઈટ પર એડ કરવા માટે અમારો સંપર્ક કરો:
                     </p>
                     <div className="text-2xl md:text-3xl font-black text-green-700 px-4 py-1 rounded-full select-none animate-pulse">
-                        (Free છે)
+                        (Free)
                     </div>
                 </div>
                 <div className="flex flex-wrap justify-center gap-4 mt-2">
