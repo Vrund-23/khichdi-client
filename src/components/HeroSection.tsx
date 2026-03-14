@@ -242,7 +242,19 @@ const HeroSection = ({ onSearch }: { onSearch?: (q: string) => void }) => {
         <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50">
             <button
               onClick={() => {
-                document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' });
+                const target = document.getElementById('owners-section');
+                if (target) {
+                  target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  // Re-evaluate scroll position after images load/layout shifts
+                  let attempts = 0;
+                  const intId = setInterval(() => {
+                    document.getElementById('owners-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    attempts++;
+                    if(attempts >= 4) clearInterval(intId);
+                  }, 400);
+                } else {
+                  document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' });
+                }
               }}
               className="px-4 py-2 sm:px-6 sm:py-2.5 bg-white/80 backdrop-blur-md shadow-md text-green-800 font-bold rounded-full border border-green-100 hover:bg-green-50 hover:scale-105 transition-all text-sm"
               style={{ fontFamily: "'DM Sans', sans-serif" }}
