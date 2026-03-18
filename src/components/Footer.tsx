@@ -28,7 +28,7 @@ const Footer = () => {
                 <h4 className="text-green-800 font-bold text-base md:text-lg mb-2 flex items-center justify-center flex-wrap gap-x-2 gap-y-1">
                     <span className="text-xl animate-bounce">📢</span>
                     <span>Note for Owners</span>
-                    <span className="text-sm font-semibold text-green-600/80">(Dining Hall / Club / Nashta House)</span>
+                    <span className="text-sm font-semibold text-green-600/80">(Dining Hall / Club / Nasta House)</span>
                 </h4>
                 <div className="flex flex-col items-center w-full mb-6 gap-2">
                     <p className="text-gray-700 text-sm md:text-base font-medium leading-relaxed text-center">

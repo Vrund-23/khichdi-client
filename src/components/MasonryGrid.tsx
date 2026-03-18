@@ -207,10 +207,10 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
             </p>
           </div>
 
-          <div className="w-full md:w-auto bg-green-50/50 backdrop-blur shadow-sm p-1.5 rounded-[20px] border border-green-100 flex items-center gap-1 font-sans">
+          <div className="w-full md:w-auto bg-green-50/50 backdrop-blur shadow-sm p-1.5 rounded-[20px] border border-green-100 flex items-center gap-1 font-sans overflow-x-auto">
             <button
               onClick={() => setSelectedType("dynamic")}
-              className={`flex-1 md:flex-none px-4 sm:px-6 py-2.5 sm:py-3 text-[13px] sm:text-sm font-black rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap ${
+              className={`shrink-0 md:flex-none px-4 sm:px-5 py-2.5 text-[12px] sm:text-sm font-black rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap ${
                 selectedType === "dynamic"
                   ? "bg-green-900 text-white shadow-lg shadow-green-900/20 scale-[1.02] transform"
                   : "text-green-700/70 hover:bg-green-100/50 hover:text-green-800 active:scale-95"
@@ -220,7 +220,7 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
             </button>
             <button
               onClick={() => setSelectedType("fixed")}
-              className={`flex-1 md:flex-none px-4 sm:px-6 py-2.5 sm:py-3 text-[13px] sm:text-sm font-black rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap ${
+              className={`shrink-0 md:flex-none px-4 sm:px-5 py-2.5 text-[12px] sm:text-sm font-black rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap ${
                 selectedType === "fixed"
                   ? "bg-green-900 text-white shadow-lg shadow-green-900/20 scale-[1.02] transform"
                   : "text-green-700/70 hover:bg-green-100/50 hover:text-green-800 active:scale-95"
@@ -230,7 +230,7 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
             </button>
             <button
               onClick={() => setSelectedType("fastfood")}
-              className={`flex-1 md:flex-none px-4 sm:px-6 py-2.5 sm:py-3 text-[13px] sm:text-sm font-black rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap ${
+              className={`shrink-0 md:flex-none px-4 sm:px-5 py-2.5 text-[12px] sm:text-sm font-black rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap ${
                 selectedType === "fastfood"
                   ? "bg-green-900 text-white shadow-lg shadow-green-900/20 scale-[1.02] transform"
                   : "text-green-700/70 hover:bg-green-100/50 hover:text-green-800 active:scale-95"
