@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'robots.txt', 'Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'],
+      includeAssets: ['favicon.ico', 'robots.txt', 'khichdi-og-image.png'],
       manifest: {
         name: 'Khichdi - Daily Mess Menus',
         short_name: 'Khichdi',
@@ -35,17 +35,17 @@ export default defineConfig(({ mode }) => ({
         display: 'standalone',
         icons: [
           {
-            src: '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png',
+            src: '/khichdi-og-image.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png',
+            src: '/khichdi-og-image.png',
             sizes: '512x512',
             type: 'image/png'
           },
           {
-            src: '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png',
+            src: '/khichdi-og-image.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'

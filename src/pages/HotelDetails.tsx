@@ -232,45 +232,53 @@ const HotelDetails = () => {
                 <meta name="description" content={`Check out the latest menu and details for ${hotelData?.messName || 'this mess'} in Vallabh Vidyanagar. Subscribe for daily menu updates. Starts at ₹${hotelData?.price || 0}.`} />
                 <meta name="keywords" content={`${hotelData?.messName || 'hotel'}, vidyanagar food, tiffin service, hostel menu, daily menu`} />
 
+                {/* Canonical URL */}
+                <link rel="canonical" href={`https://www.khichdi.co.in/hotel/${id || ''}`} />
+
                 {/* Open Graph / Facebook */}
                 <meta property="og:type" content="restaurant.restaurant" />
                 <meta property="og:url" content={`https://www.khichdi.co.in/hotel/${id || ''}`} />
                 <meta property="og:title" content={hotelData.messName ? `${hotelData.messName} - Menu & Details | Khichdi` : 'Hotel Details | Khichdi'} />
                 <meta property="og:description" content={`Check out the latest menu and details for ${hotelData?.messName || 'this mess'} in Vallabh Vidyanagar. Starts at ₹${hotelData?.price || 0}.`} />
-                <meta property="og:image" content={hotelData.image || "https://www.khichdi.co.in/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png"} />
+                <meta property="og:image" content={hotelData.image || "https://www.khichdi.co.in/khichdi-og-image.png"} />
+                <meta property="og:image:width" content="1200" />
+                <meta property="og:image:height" content="630" />
                 <meta property="og:site_name" content="Khichdi" />
+                <meta property="og:locale" content="en_IN" />
+                <meta property="og:locale:alternate" content="gu_IN" />
 
                 {/* Twitter */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:url" content={`https://www.khichdi.co.in/hotel/${id || ''}`} />
                 <meta name="twitter:title" content={hotelData.messName ? `${hotelData.messName} - Menu & Details | Khichdi` : 'Hotel Details | Khichdi'} />
                 <meta name="twitter:description" content={`Check out the latest menu and details for ${hotelData?.messName || 'this mess'} in Vallabh Vidyanagar. Starts at ₹${hotelData?.price || 0}.`} />
-                <meta name="twitter:image" content={hotelData.image || "https://www.khichdi.co.in/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png"} />
+                <meta name="twitter:image" content={hotelData.image || "https://www.khichdi.co.in/khichdi-og-image.png"} />
 
-                {/* JSON-LD Structured Data */}
+                {/* JSON-LD Structured Data — using JSON.stringify for all dynamic values
+                    to prevent broken JSON if names/addresses contain quotes or special chars */}
                 <script type="application/ld+json">
-                    {`
-                    {
+                    {JSON.stringify({
                         "@context": "https://schema.org",
                         "@type": "Restaurant",
-                        "name": "${hotelData.messName || 'Restaurant'}",
-                        "image": "${hotelData.image || 'https://www.khichdi.co.in/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'}",
+                        "name": hotelData.messName || "Restaurant",
+                        "image": hotelData.image || "https://www.khichdi.co.in/khichdi-og-image.png",
                         "address": {
                             "@type": "PostalAddress",
-                            "streetAddress": "${hotelData.address || 'Vallabh Vidyanagar'}",
+                            "streetAddress": hotelData.address || "Vallabh Vidyanagar",
                             "addressLocality": "Anand",
                             "addressRegion": "GJ",
                             "addressCountry": "IN"
-                        }${hotelData.latitude && hotelData.longitude ? `,
-                        "geo": {
-                            "@type": "GeoCoordinates",
-                            "latitude": ${hotelData.latitude},
-                            "longitude": ${hotelData.longitude}
-                        }` : ''},
-                        "url": "https://www.khichdi.co.in/hotel/${id || ''}",
-                        "priceRange": "₹${hotelData.price || 0}"
-                    }
-                    `}
+                        },
+                        ...(hotelData.latitude && hotelData.longitude ? {
+                            "geo": {
+                                "@type": "GeoCoordinates",
+                                "latitude": hotelData.latitude,
+                                "longitude": hotelData.longitude
+                            }
+                        } : {}),
+                        "url": `https://www.khichdi.co.in/hotel/${id || ""}`,
+                        "priceRange": `₹${hotelData.price || 0}`
+                    })}
                 </script>
             </Helmet>
             {/* Header bar */}
@@ -355,7 +363,7 @@ const HotelDetails = () => {
                                     decoding="async"
                                     // @ts-ignore
                                     fetchpriority="high"
-                                    onError={(e) => { e.currentTarget.src = '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'; }}
+                                    onError={(e) => { e.currentTarget.src = '/khichdi-og-image.png'; }}
                                     onClick={(e) => { e.stopPropagation(); setFullScreenImage(activeMenu.imageUrl); setShowFullScreen(true); }}
                                     style={{ animation: 'mc-fadeIn 0.3s ease-in-out' }}
                                 />
@@ -424,7 +432,7 @@ const HotelDetails = () => {
                                     alt={`${hotelData.messName} ambiance ${idx + 1}`}
                                     className="w-64 h-44 sm:w-80 sm:h-56 object-cover rounded-2xl shadow-sm shrink-0 snap-center border border-green-100"
                                     loading="lazy"
-                                    onError={(e) => { e.currentTarget.src = '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'; }}
+                                    onError={(e) => { e.currentTarget.src = '/khichdi-og-image.png'; }}
                                     onClick={(e) => { e.stopPropagation(); setFullScreenImage(photo); setShowFullScreen(true); }}
                                     style={{ cursor: 'pointer', transition: 'transform 0.3s ease' }}
                                     onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.03)'}
@@ -456,7 +464,7 @@ const HotelDetails = () => {
                         src={optimizeImage(fullScreenImage, 1800)}
                         alt={hotelData.messName}
                         className="w-full h-full object-contain max-w-7xl mx-auto"
-                        onError={(e) => { e.currentTarget.src = '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'; }}
+                        onError={(e) => { e.currentTarget.src = '/khichdi-og-image.png'; }}
                         onClick={(e) => {
                             e.stopPropagation();
                             setShowFullScreen(false);
