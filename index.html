@@ -3,6 +3,19 @@
 
 <head>
   <meta charset="UTF-8" />
+  <script>
+    // Suppress common browser extension errors (like Grammarly/React DevTools 'disconnected port')
+    // that clutter the console and Sentry but aren't caused by the application.
+    window.addEventListener('error', (event) => {
+      if (
+        event.message?.includes('disconnected port object') || 
+        (event.filename && event.filename.includes('proxy.js'))
+      ) {
+        event.stopImmediatePropagation();
+        console.warn('Blocked external extension error:', event.message);
+      }
+    }, true);
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Preload fonts to avoid render blocking -->
