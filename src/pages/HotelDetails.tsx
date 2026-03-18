@@ -124,7 +124,7 @@ const HotelDetails = () => {
                                 address: hotel.address || "",
                                 latitude: hotel.latitude,
                                 longitude: hotel.longitude,
-                                image: hotel.todayMenu?.imageUrl || (hotel.hotelType === 'fixed' ? (hotel.imageUrl || "") : ""),
+                                image: hotel.todayMenu?.imageUrl || (hotel.hotelType === 'fixed' || hotel.hotelType === 'fastfood' ? (hotel.imageUrl || "") : ""),
                                 uploadedAt: hotel.todayMenu?.date || undefined,
                                 note: hotel.todayMenu?.note || "",
                                 hotelPhotos: hotel.photos || [],
@@ -338,8 +338,8 @@ const HotelDetails = () => {
 
                 {/* Menu / Gallery Section */}
                 <h3 className="text-2xl font-black font-serif text-green-900 mb-6 flex items-center gap-3">
-                    {hotelData.hotelType === 'fixed' ? "🍽️ Menu" : (hotelData.image && currentPhotoIndex === 0 ? "🍽️ Today's Menu" : "🍽️ Past Menu")}
-                    {activeMenu?.date && hotelData.hotelType !== 'fixed' && <span className="text-sm font-normal text-gray-500 font-sans mt-1 bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">{new Date(activeMenu.date).toLocaleDateString()}</span>}
+                    {(hotelData.hotelType === 'fixed' || hotelData.hotelType === 'fastfood') ? "🍽️ Menu" : (hotelData.image && currentPhotoIndex === 0 ? "🍽️ Today's Menu" : "🍽️ Past Menu")}
+                    {activeMenu?.date && hotelData.hotelType !== 'fixed' && hotelData.hotelType !== 'fastfood' && <span className="text-sm font-normal text-gray-500 font-sans mt-1 bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">{new Date(activeMenu.date).toLocaleDateString()}</span>}
                 </h3>
 
                 <div className="bg-white p-4 sm:p-6 rounded-[32px] shadow-xl shadow-green-900/5 border border-green-50 mb-8">

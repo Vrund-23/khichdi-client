@@ -9,6 +9,7 @@ interface MenuCardProps {
   image: string;
   messName: string;
   price: number;
+  showPrice?: boolean;
   isOpen: boolean;
   distance?: string;
   index?: number;
@@ -24,7 +25,7 @@ interface MenuCardProps {
   hotelType?: string;
 }
 
-const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploadedAt, note, hotelId, address, latitude, longitude, hotelImage, hotelPhotos, menuPostedToday = true, hotelType = "dynamic" }: MenuCardProps) => {
+const MenuCard = ({ image, messName, price, showPrice = true, isOpen, distance, index = 0, uploadedAt, note, hotelId, address, latitude, longitude, hotelImage, hotelPhotos, menuPostedToday = true, hotelType = "dynamic" }: MenuCardProps) => {
   const [liked, setLiked] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showFullScreen, setShowFullScreen] = useState(false);
@@ -135,7 +136,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
               fetchpriority={index < 6 ? "high" : "auto"}
               onError={(e) => { e.currentTarget.src = '/Gemini_Generated_Image_su8l5hsu8l5hsu8l.png'; }}
             />
-            {price > 0 && <div className="mc-price-tag">₹{price}</div>}
+            {price > 0 && showPrice && <div className="mc-price-tag">₹{price}</div>}
           </div>
 
           <div className="mc-footer">
@@ -198,7 +199,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
           </div>
           <div className="nmp-footer">
             <h3 className="nmp-name">{messName}</h3>
-            {price > 0 && (
+            {price > 0 && showPrice && (
               <span style={{
                 background: 'linear-gradient(135deg, #9ca3af, #d1d5db)',
                 color: '#fff',
@@ -235,7 +236,7 @@ const MenuCard = ({ image, messName, price, isOpen, distance, index = 0, uploade
                     <div style={{ color: "#9ca3af", fontWeight: 600, marginTop: "10px" }}>No menu available today</div>
                   </div>
                 )}
-                {price > 0 && <div className="mc-modal-price">₹{price}</div>}
+                {price > 0 && showPrice && <div className="mc-modal-price">₹{price}</div>}
                 <div className="mc-modal-img-fade"></div>
               </div>
               <div className="mc-modal-body">

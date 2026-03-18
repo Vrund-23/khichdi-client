@@ -15,12 +15,12 @@ import menu6 from "@/assets/menu-6.jpg";
 
 // Static fallback data when backend is completely unreachable
 const fallbackData: DisplayMenu[] = [
-  { id: "f1", image: menu1, messName: "Somnath", price: 70, isOpen: true, distance: "0.3 km", menuPostedToday: true },
-  { id: "f2", image: menu2, messName: "Mahadev", price: 85, isOpen: true, distance: "0.5 km", menuPostedToday: true },
-  { id: "f3", image: menu3, messName: "Gayatri", price: 60, isOpen: false, distance: "0.8 km", menuPostedToday: true },
-  { id: "f4", image: menu4, messName: "Nutan-Club", price: 90, isOpen: true, distance: "1.2 km", menuPostedToday: true },
-  { id: "f5", image: menu5, messName: "Gujrat-Club", price: 55, isOpen: true, distance: "0.1 km", menuPostedToday: true },
-  { id: "f6", image: menu6, messName: "A.M.Naik", price: 75, isOpen: true, distance: "0.6 km", menuPostedToday: true },
+  { id: "f1", image: menu1, messName: "Somnath", price: 70, showPrice: true, isOpen: true, distance: "0.3 km", menuPostedToday: true },
+  { id: "f2", image: menu2, messName: "Mahadev", price: 85, showPrice: true, isOpen: true, distance: "0.5 km", menuPostedToday: true },
+  { id: "f3", image: menu3, messName: "Gayatri", price: 60, showPrice: true, isOpen: false, distance: "0.8 km", menuPostedToday: true },
+  { id: "f4", image: menu4, messName: "Nutan-Club", price: 90, showPrice: true, isOpen: true, distance: "1.2 km", menuPostedToday: true },
+  { id: "f5", image: menu5, messName: "Gujrat-Club", price: 55, showPrice: true, isOpen: true, distance: "0.1 km", menuPostedToday: true },
+  { id: "f6", image: menu6, messName: "A.M.Naik", price: 75, showPrice: true, isOpen: true, distance: "0.6 km", menuPostedToday: true },
 ];
 
 interface BackendHotel {
@@ -31,6 +31,7 @@ interface BackendHotel {
   latitude?: number;
   longitude?: number;
   price?: number;
+  showPrice?: boolean;
   imageUrl?: string;
   photos?: string[];
   hotelType?: string;
@@ -47,6 +48,7 @@ interface DisplayMenu {
   image: string;
   messName: string;
   price: number;
+  showPrice: boolean;
   isOpen: boolean;
   distance: string;
   uploadedAt?: string;
@@ -65,7 +67,7 @@ const isFavourite = (hotelId?: string) =>
   hotelId ? localStorage.getItem(`liked_${hotelId}`) === 'true' : false;
 
 const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
-  const [selectedType, setSelectedType] = useState<"dynamic" | "fixed">("dynamic");
+  const [selectedType, setSelectedType] = useState<"dynamic" | "fixed" | "fastfood">("dynamic");
   const [likeVersion, setLikeVersion] = useState(0);
 
   const fetcher = async () => {
@@ -74,7 +76,7 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
       return (hotels as BackendHotel[]).map((h) => {
         const hotelName = h.hotelName || h.name || "Unknown Mess";
         const hType = h.hotelType || "dynamic";
-        const isFixed = hType === "fixed";
+        const isFixed = hType === "fixed" || hType === "fastfood";
         const hasMenu = h.todayMenu !== null && h.todayMenu !== undefined;
         const isMenuAvailable = isFixed || hasMenu;
         return {
@@ -82,6 +84,7 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
           image: hasMenu ? h.todayMenu!.imageUrl : (isFixed ? (h.imageUrl || "") : ""),
           messName: hotelName,
           price: h.price || 0,
+          showPrice: h.showPrice !== false,
           isOpen: true,
           distance: "",
           uploadedAt: hasMenu && !isFixed ? h.todayMenu!.date : undefined,
@@ -188,7 +191,7 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-5 border-b border-green-50 pb-5">
           <div className="flex flex-col gap-2">
             <h2 className="text-2xl sm:text-3xl font-black font-serif text-green-900 flex items-center gap-3">
-              {selectedType === "fixed" ? "📋 Fixed Menus" : "🍽️ Today's Menus"}
+              {selectedType === "dynamic" ? "🍽️ Today's Menus" : selectedType === "fixed" ? "🌅 Breakfast & Snacks" : "🍔 Fast Food"}
               {usingBackend && (
                 <span className="text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-green-100 text-green-700 uppercase tracking-widest border border-green-200 self-center ml-1">
                   Live
@@ -213,7 +216,7 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
                   : "text-green-700/70 hover:bg-green-100/50 hover:text-green-800 active:scale-95"
               }`}
             >
-              Daily Changing
+              Daily Specials
             </button>
             <button
               onClick={() => setSelectedType("fixed")}
@@ -223,7 +226,17 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
                   : "text-green-700/70 hover:bg-green-100/50 hover:text-green-800 active:scale-95"
               }`}
             >
-              Fixed Menus
+              Breakfast & Snacks
+            </button>
+            <button
+              onClick={() => setSelectedType("fastfood")}
+              className={`flex-1 md:flex-none px-4 sm:px-6 py-2.5 sm:py-3 text-[13px] sm:text-sm font-black rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap ${
+                selectedType === "fastfood"
+                  ? "bg-green-900 text-white shadow-lg shadow-green-900/20 scale-[1.02] transform"
+                  : "text-green-700/70 hover:bg-green-100/50 hover:text-green-800 active:scale-95"
+              }`}
+            >
+              Fast Food
             </button>
           </div>
         </div>
