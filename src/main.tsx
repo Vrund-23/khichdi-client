@@ -21,6 +21,11 @@ Sentry.init({
   // Session Replay
   replaysSessionSampleRate: 0.1, // Captures 10% of sessions for replay viewing
   replaysOnErrorSampleRate: 1.0, // Captures a replay every time an error happens
+  // Filter out noisy extension errors
+  ignoreErrors: [
+    'Attempting to use a disconnected port object',
+    'proxy.js',
+  ],
 });
 
 createRoot(document.getElementById("root")!).render(
