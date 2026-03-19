@@ -263,7 +263,7 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
 
         {!loading && sorted.length > 0 && (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div data-nosnippet className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {sorted.slice(0, renderLimit).map((item, i) => (
                 <div key={item.id}>
                   <MenuCard {...item} index={i} />

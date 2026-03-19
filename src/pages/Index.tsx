@@ -41,9 +41,11 @@ const Index = () => {
           {`
             {
               "@context": "https://schema.org",
-              "@type": "WebSite",
+              "@type": ["WebSite", "Organization"],
               "name": "Khichdi",
-              "url": "https://www.khichdi.co.in/"
+              "url": "https://www.khichdi.co.in/",
+              "logo": "https://www.khichdi.co.in/khichdi-og-image.png",
+              "image": "https://www.khichdi.co.in/khichdi-og-image.png"
             }
           `}
         </script>
