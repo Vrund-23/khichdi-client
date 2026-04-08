@@ -5,23 +5,7 @@ import { fetchAllHotelsWithTodayMenu } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import PullToRefresh from "react-simple-pull-to-refresh";
 
-// Fallback static assets (used when backend is unreachable)
-import menu1 from "@/assets/menu-1.jpg";
-import menu2 from "@/assets/menu-2.jpg";
-import menu3 from "@/assets/menu-3.jpg";
-import menu4 from "@/assets/menu-4.jpg";
-import menu5 from "@/assets/menu-5.jpg";
-import menu6 from "@/assets/menu-6.jpg";
 
-// Static fallback data when backend is completely unreachable
-const fallbackData: DisplayMenu[] = [
-  { id: "f1", image: menu1, messName: "Somnath", price: 70, showPrice: true, isOpen: true, distance: "0.3 km", menuPostedToday: true },
-  { id: "f2", image: menu2, messName: "Mahadev", price: 85, showPrice: true, isOpen: true, distance: "0.5 km", menuPostedToday: true },
-  { id: "f3", image: menu3, messName: "Gayatri", price: 60, showPrice: true, isOpen: false, distance: "0.8 km", menuPostedToday: true },
-  { id: "f4", image: menu4, messName: "Nutan-Club", price: 90, showPrice: true, isOpen: true, distance: "1.2 km", menuPostedToday: true },
-  { id: "f5", image: menu5, messName: "Gujrat-Club", price: 55, showPrice: true, isOpen: true, distance: "0.1 km", menuPostedToday: true },
-  { id: "f6", image: menu6, messName: "A.M.Naik", price: 75, showPrice: true, isOpen: true, distance: "0.6 km", menuPostedToday: true },
-];
 
 interface BackendHotel {
   _id: string;
@@ -113,9 +97,10 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
     dedupingInterval: 5000,
   });
 
+  const isBackendDown = !loading && swrMenus === undefined;
+
   const menus = useMemo(() => {
     if (swrMenus) return swrMenus;
-    if (!loading && !swrMenus) return fallbackData;
     return [];
   }, [swrMenus, loading]);
 
@@ -184,6 +169,33 @@ const MasonryGrid = ({ searchQuery }: { searchQuery: string }) => {
 
   return (
     <PullToRefresh onRefresh={handleRefresh} refreshingContent={<div className="flex justify-center p-4">Refreshing...</div>}>
+      {isBackendDown && (
+        <div
+          role="alert"
+          className="w-full flex items-center gap-3 px-5 py-4"
+          style={{
+            background: "linear-gradient(90deg, #b91c1c 0%, #dc2626 60%, #ef4444 100%)",
+            borderBottom: "2px solid #7f1d1d",
+            boxShadow: "0 4px 24px 0 rgba(185,28,28,0.18)",
+          }}
+        >
+          <span style={{ fontSize: "1.5rem", flexShrink: 0 }}>🚧</span>
+          <div className="flex flex-col">
+            <span className="font-black text-white text-sm sm:text-base tracking-wide uppercase" style={{ letterSpacing: "0.06em" }}>
+              Website Under Maintenance
+            </span>
+            <span className="text-red-100 text-xs sm:text-sm font-medium mt-0.5">
+              Our servers are temporarily down. We'll be back shortly — please check again in a few minutes.
+            </span>
+          </div>
+          <button
+            onClick={handleRefresh}
+            className="ml-auto shrink-0 text-xs font-bold text-white border border-red-300 rounded-lg px-3 py-1.5 hover:bg-red-700 active:scale-95 transition-all"
+          >
+            Retry
+          </button>
+        </div>
+      )}
       <div
         className="w-full max-w-6xl mx-auto px-4 py-6 pb-8"
         style={{ background: "linear-gradient(to bottom, #f0fdf4, #fafaf8)" }}
